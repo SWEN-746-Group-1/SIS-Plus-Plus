@@ -1,5 +1,4 @@
 # SIS++ Class Selection System Design Documentation
-
 ## Team Information
 * Team name: TEAMNAME
 * Team members
@@ -10,20 +9,57 @@
 
 ## Executive Summary
 
-SIS, or the Student Information System, is used at RIT for many functions. It allows students to select classes, check grades, see their progress in their degree, update emergency information, and many more. Though it has these features, many of these features feel very clunky, making it difficult to use for the average student. Our view on this application is the class selection system. The current system lacks many features such as viewing different class options, viewing a calendar, enrolling by requirements and many more. This makes it difficult to select the correct classes, as the only check the system does is whether it conflicts with another class, or if prerequisites are missing. This is where a new system, SIS++, could be very beneficial.
-	
-SIS++ is an application that would replace the old class selection. This system would include new features, which would include searching by requirements, recommendations for courses, viewing professor ratings and previewing class schedules. This application would also support advisors viewing schedules as well, to better advise their students. These features would allow the users a significantly better experience, and would also limit the amount of time students spend selecting classes, as they would have a better understanding throughout the selection process.
+RIT's SIS (Student Information System) has a reputation among students and staff alike of being slow, clunky, and confusing. It has a large range of uses, including enrolling in courses, viewing grades, tracking program progress, and managing personal information. The scope of the system as a whole is too large for a team of four to tackle in a few months, so we have selected course enrollment and related activities to focus on, as it is the most common reason students find themselves using this software.
+
+Our main goals are to streamline the current workflow for enrollment by providing relevant information in a clear way, and minimizing the number of actions needed to a few intuitive steps. We plan to introduce features that directly connect the program requirements and progress to the enrollment system as well as enabling students to make more informed choices about the courses the enroll in.
 
 ## Requirements
 
 This section describes the features of the application.
 
 ### Definition of MVP
-> _Provide a simple description of the Minimum Viable Product._
+
+The following is a list of features that we consider to be critical in overhauling the course selection system. We will focus primarily on providing additional information and search filtering capability, as well as quality of life improvements. Beyond this, we will integrate expanded functionality for course swaps and waitlists, as well as future course planning.
 
 ### MVP Features
->  _Provide a list of top-level Epics and/or Stories of the MVP._
 
+#### Must include
+
+Students can search the course catalog based on their own required classes.
+
+Students can view a flow diagram of their program requirements.
+
+Students can view the full chain of prerequisites for a course.
+
+Students can filter their search by fields including but not limited to professor, time slot, remote/hybrid/in-person.
+
+Students can place themselves on a waitlist, view their position, and remove themselves from the waitlist.
+
+Courses are pre-validated with a student's completed courses and their current cart to avoid needing to manually validate after adding.
+
+Students can view their current cart in the form of a weekly schedule.
+
+---
+
+#### Should include
+
+Students can view other major's program plans.
+
+Students can form "Course Swap Groups" that allow their cart to be dynamic and respond to availabilities according to the student's preferences.
+
+Students can select tentative courses for their future semesters and plan out their full degree.
+
+Students can view the courses they took in previous semesters.
+
+---
+
+#### Could include 
+
+Students can leave reviews on courses and professors, and can view other students' reviews.
+
+SIS++ can offer recommendations for courses to enroll in based on a student's requirements and past courses.
+
+SIS++ displays clear and helpful messages when an action fails (such as enrolling in a course that is not available to them).
 
 ## Architecture and Design
 
