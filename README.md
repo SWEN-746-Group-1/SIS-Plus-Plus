@@ -1,11 +1,13 @@
 # SIS++ Class Selection System Design Documentation
+
 ## Team Information
-* Team name: TEAMNAME
-* Team members
-  * Daniel Arcega
-  * Dan Corcoran
-  * Reid Taylor
-  * Ryan Yocum
+
+-   Team name: TEAMNAME
+-   Team members
+    -   Daniel Arcega
+    -   Dan Corcoran
+    -   Reid Taylor
+    -   Ryan Yocum
 
 ## Executive Summary
 
@@ -53,7 +55,7 @@ Students can view the courses they took in previous semesters.
 
 ---
 
-#### Could include 
+#### Could include
 
 Students can leave reviews on courses and professors, and can view other students' reviews.
 
@@ -66,15 +68,15 @@ SIS++ displays clear and helpful messages when an action fails (such as enrollin
 This section describes the application architecture.
 
 ### Software Architecture
-> _Place a architectural diagram here._
-> _Describe your software architecture._
 
+> _Place a architectural diagram here._ > _Describe your software architecture._
 
 ### Use Cases
-> _Place a use case diagram here._
+
+![img](use_case.png)
+
 > _Describe your use case diagram._
 
-
 ### Class Diagram
-> _Place a class diagram here._
-> _Describe your class diagram._
+
+> _Place a class diagram here._ > _Describe your class diagram._
