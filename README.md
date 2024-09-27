@@ -75,7 +75,7 @@ This section describes the application architecture.
 
 ![img](use_case.png)
 
-> _Describe your use case diagram._
+The SIS++ MVP requires only one actor, the student. This student can interact with our three key subsystems: class searching, class enrollment, and degree planning. These three subsystems support all the most important features of the current SIS, while also providing more insight into the student's academic career. By improving visibility into a student's academics, they are able to more efficiently and more comfortably enroll in classes that will have a much higher likelihood of being applicable to their degrees. By also including degree planning, SIS++ elimintates the tedious task of visiting multiple different RIT webpages and endlessly scanning program information in the hopes that you are enrolling in the correct classes. These use cases reduce workload and stress for students and advisors alike.
 
 ### Class Diagram
 
