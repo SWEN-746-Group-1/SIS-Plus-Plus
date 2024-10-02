@@ -97,7 +97,7 @@ The following is a list of features that we consider to be critical in overhauli
 		     - Courses that are similar in topic or follow in sequence from non-major courses the student has taken in the past  
 		     - Courses taught by professors that the student has rated highly  
 		     - Courses the student has added to their long-term-plan (feature 10\)  
-3. The recommendation section should be able to be hidden by the student.  
+	c. The recommendation section should be able to be hidden by the student.  
 14. SIS++ displays clear and helpful messages when an action fails (such as enrolling in a course that is not available to them).  
 	    a. When the student attempts to enroll from their cart and one or more courses do not have seats available, they should be informed as such, in detail  
 	    b. Messages generated as a result of criterion 14a should include quick actions including enrolling in a different section (assuming no conflict and open seats) or joining the waitlist  
