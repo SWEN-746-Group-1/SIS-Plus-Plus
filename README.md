@@ -124,6 +124,10 @@ The SIS++ MVP requires only one actor, the student. This student can interact wi
 
 ![img](domain_model.png)
 
+### Sequence Diagram
+
+![img](high_level_sequence.png)
+
 ### Class Diagram
 
 > _Place a class diagram here._ > _Describe your class diagram._
