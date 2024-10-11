@@ -112,7 +112,9 @@ This section describes the application architecture.
 
 ### Software Architecture
 
-> _Place a architectural diagram here._ > _Describe your software architecture._
+![img](architecture.png)
+
+This diagrams outlines our architecture, consisting of a backend utilizing a Java Sprint Boot API and a frontend built with React. The backend is built using an MVC pattern to drive our app's operational capabilities. The controller interacts with an external database to save and retrieve data, which then updates the model. The model then updates our view, which in turn will begin the process again by requesting data from the controller. The frontend makes API requests through services, which will allow data to be transfered to the components. The components are then rendered by the router, which manages changes in the user interface.
 
 ### Use Cases
 
