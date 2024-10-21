@@ -14,7 +14,9 @@ For more details, refer to our [docs](docs/README.md)
 
 - Java 21
 - Maven
-- Database infrastructure TBD
+- Current Postgres Instance
+
+Open `application.properties` and modify the connection string
 
 Run the following command: 
 
