@@ -3,7 +3,7 @@ package com.zeroplusplus.sisplusplus.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SwapGroup implements CartItem {
+public class SwapGroup extends CartItem {
 
     private List<CourseSection> sections;
 

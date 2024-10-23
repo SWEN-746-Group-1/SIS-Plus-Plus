@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CartEnroller implements CartVisitor{
-    List<Enrollment> enrolledItems;
+    private List<Enrollment> enrolledItems;
 
     public CartEnroller(){
         //TODO implement

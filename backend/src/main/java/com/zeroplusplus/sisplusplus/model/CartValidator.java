@@ -5,7 +5,7 @@ import java.util.List;
 
 public class CartValidator implements CartVisitor{
 
-    List<CartItem> validItems;
+    private List<CartItem> validItems;
     public CartValidator(){
         //TODO change
         this.validItems = new ArrayList<CartItem>();
