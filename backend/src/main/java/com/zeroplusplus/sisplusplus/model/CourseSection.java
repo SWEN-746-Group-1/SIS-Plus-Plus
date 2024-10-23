@@ -3,7 +3,7 @@ package com.zeroplusplus.sisplusplus.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CourseSection implements CartItem {
+public class CourseSection extends CartItem {
 
     private Course course;
     private String instructor;
