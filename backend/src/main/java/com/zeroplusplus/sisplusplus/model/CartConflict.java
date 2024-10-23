@@ -1,6 +1,6 @@
 package com.zeroplusplus.sisplusplus.model;
 
-public enum CartConflictType{
+enum CartConflictType{
     TIME_OVERLAP,
     MISSING_PREREQUISITE,
     MISSING_COREQUISITE,
@@ -12,6 +12,10 @@ public enum CartConflictType{
     //Insert name functionhere
     //Insert description here
 }
-public class CartConflict(){
+public class CartConflict{
     private CartItem cause;
+    public CartConflict(){
+        //TODO: implement
+        this.cause = null;
+    }
 }
