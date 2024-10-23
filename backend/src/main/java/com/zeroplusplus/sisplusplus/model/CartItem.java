@@ -1,5 +1,6 @@
 package com.zeroplusplus.sisplusplus.model;
 
-public interface CartItem {
+public abstract class CartItem {
+    private CartConflict conflict;
     void visit(CartVisitor cartVisitor);
 }
