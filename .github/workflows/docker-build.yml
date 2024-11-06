@@ -15,5 +15,4 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build the Docker image
-      working-directory: ./next
       run: docker build . --file Dockerfile --tag sisplusplus:$(date +%s)
