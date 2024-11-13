@@ -1,6 +1,6 @@
 "use client"
 
-import { Book, ChevronRight } from "lucide-react"
+import { Book, ChevronRight, ShoppingCart } from "lucide-react"
 
 import {
   Collapsible,
@@ -18,6 +18,7 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import Link from "next/link"
+
 
 export default function SidebarNav() {
   return (
@@ -51,6 +52,11 @@ export default function SidebarNav() {
             </SidebarMenuItem>
           </Collapsible>
       </SidebarMenu>
+      <SidebarMenuButton tooltip="Cart">
+        <ShoppingCart />
+        <span>Your Cart</span>
+
+      </SidebarMenuButton>
     </SidebarGroup>
   )
 }
