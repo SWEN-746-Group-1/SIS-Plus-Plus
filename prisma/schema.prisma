@@ -14,18 +14,26 @@ datasource db {
 }
 
 model User {
-  id            String          @id @default(cuid())
+  id            String @id @default(cuid())
   name          String?
-  email         String          @unique
+  email         String @unique
   emailVerified DateTime?
   image         String?
+  majorid       String
+  cartId        String
+  Cart          Cart?
+  schedule      Schedule?
+  planned       FuturePlan?
+
   accounts      Account[]
   sessions      Session[]
+  major         Major @relation(fields: [majorid], references: [id])
+
   // Optional for WebAuthn support
   Authenticator Authenticator[]
- 
+
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  updatedAt DateTime @updatedAt  
 }
  
 model Account {
@@ -50,10 +58,10 @@ model Account {
 }
  
 model Session {
-  sessionToken String   @unique
+  sessionToken String @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User @relation(fields: [userId], references: [id], onDelete: Cascade)
  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -69,7 +77,7 @@ model VerificationToken {
  
 // Optional for WebAuthn support
 model Authenticator {
-  credentialID         String  @unique
+  credentialID         String @unique
   userId               String
   providerAccountId    String
   credentialPublicKey  String
@@ -81,4 +89,119 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
  
   @@id([userId, credentialID])
+}
+
+model Course {
+  id          String @id @default(cuid())
+  department  String
+  code        String
+  credits     Int
+  honorsOnly  Boolean
+  title       String
+  description String?
+
+  semestersOffered Semester[]
+  majors           Major[] // Many-to-many to facilitate multiple majors needing the same course
+
+  // Self-referencing one-to-many for prereqs
+  prerequisites   Course[] @relation("Prerequisites")
+  prerequisiteFor Course[] @relation("Prerequisites")
+
+  // Mandatory but unused backlinks
+  sections CourseSection[] @ignore 
+  plan FuturePlan[] @ignore
+}
+
+model CourseSection {
+  id         String @id @default(cuid())
+  courseId   String
+  catalogId  String
+  instructor String
+  timeSlotId String
+  location   String
+  capacity   Int
+
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  timeSlot TimeSlot @relation(fields: [timeSlotId], references: [id])
+  catalog  Catalog  @relation(fields: [catalogId], references: [id])
+
+  // Contains a status for both waitlisted and fully enrolled
+  classlist  Enrolled[]
+
+  // Mandatory but unused backlinks
+  cart     Cart[] @ignore
+  schedule Schedule[] @ignore
+}
+
+model TimeSlot {
+  id            String @id @default(cuid())
+  daysOfTheWeek String
+  startTime     String
+  endTime       String
+
+  courseSections CourseSection[]
+}
+
+model Enrolled {
+  id        String @id @default(cuid())
+  studentId String
+  sectionId String
+  status    String
+
+  courseSection CourseSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+}
+
+model Catalog {
+  id String @id @default(cuid())
+
+  courseSections CourseSection[]
+}
+
+model Major {
+  id String @id @default(cuid())
+  
+  courses Course[]
+  users User[]
+}
+
+model Semester {
+  id String @id @default(cuid())
+  semesterCode String
+
+  courses Course[]
+
+  // Mandatory but unused backlinks
+  schedule Schedule[] @ignore
+  plan     FuturePlan[] @ignore
+}
+
+model Cart {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  courseSections CourseSection[]
+}
+
+model Schedule {
+  id         String @id @default(cuid())
+  userId     String @unique
+  semesterId String @unique
+
+  user     User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  semester Semester @relation(fields: [semesterId], references: [id], onDelete: Cascade)
+
+  courseSections CourseSection[]
+}
+
+model FuturePlan {
+  id         String @id @default(cuid())
+  userId     String @unique
+  semesterId String @unique
+
+  user     User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  semester Semester @relation(fields: [semesterId], references: [id], onDelete: Cascade)
+
+  courses Course[]
 }
