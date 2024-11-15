@@ -20,7 +20,6 @@ model User {
   emailVerified DateTime?
   image         String?
   majorid       String
-  cartId        String
   Cart          Cart?
   schedule      Schedule?
   planned       FuturePlan?
@@ -31,9 +30,10 @@ model User {
 
   // Optional for WebAuthn support
   Authenticator Authenticator[]
+  Enrolled Enrolled[]
 
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt  
+  updatedAt DateTime @updatedAt
 }
  
 model Account {
@@ -102,14 +102,12 @@ model Course {
 
   semestersOffered Semester[]
   majors           Major[] // Many-to-many to facilitate multiple majors needing the same course
+  sections         CourseSection[]
+  plan             FuturePlan[]
 
   // Self-referencing one-to-many for prereqs
   prerequisites   Course[] @relation("Prerequisites")
   prerequisiteFor Course[] @relation("Prerequisites")
-
-  // Mandatory but unused backlinks
-  sections CourseSection[] @ignore 
-  plan FuturePlan[] @ignore
 }
 
 model CourseSection {
@@ -123,14 +121,11 @@ model CourseSection {
 
   course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
   timeSlot TimeSlot @relation(fields: [timeSlotId], references: [id])
-  catalog  Catalog  @relation(fields: [catalogId], references: [id])
 
   // Contains a status for both waitlisted and fully enrolled
   classlist  Enrolled[]
-
-  // Mandatory but unused backlinks
-  cart     Cart[] @ignore
-  schedule Schedule[] @ignore
+  cart       Cart[]
+  schedule   Schedule[]
 }
 
 model TimeSlot {
@@ -149,12 +144,7 @@ model Enrolled {
   status    String
 
   courseSection CourseSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-}
-
-model Catalog {
-  id String @id @default(cuid())
-
-  courseSections CourseSection[]
+  user          User @relation(fields: [studentId], references: [id], onDelete: Cascade)
 }
 
 model Major {
@@ -168,18 +158,19 @@ model Semester {
   id String @id @default(cuid())
   semesterCode String
 
-  courses Course[]
-
-  // Mandatory but unused backlinks
-  schedule Schedule[] @ignore
-  plan     FuturePlan[] @ignore
+  courses  Course[]
+  schedule Schedule[]
+  plan     FuturePlan[]
+  cart     Cart[]
 }
 
 model Cart {
-  id     String @id @default(cuid())
-  userId String @unique
+  id         String @id @default(cuid())
+  userId     String @unique
+  semesterId String @unique
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  semester Semester @relation(fields: [semesterId], references: [id], onDelete: Cascade)
 
   courseSections CourseSection[]
 }
