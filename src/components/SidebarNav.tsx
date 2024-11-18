@@ -54,11 +54,9 @@ export default function SidebarNav() {
       </SidebarMenu>
       <SidebarMenuButton tooltip="Cart">
         <ShoppingCart />
-          <Link href={"/cart"}>
+          <Link href={"/your-cart"}>
               <span>Your Cart</span>
           </Link>
-
-
       </SidebarMenuButton>
     </SidebarGroup>
   )
