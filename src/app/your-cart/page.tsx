@@ -8,8 +8,15 @@ const example_courses = [
     {name: "C", id: 2, prof:"Bob",date:"MWF"}
 ];
 
-export default function YourCart( cart: Cart ) {
-    const contents: CourseSection[] = cart.courseSections;
+export default async function YourCart() {
+    const courses = await prisma.cart.findMany({
+        where: {
+            userID: user_id
+        },
+        include: {
+            courseSections: true
+        }
+    })
     return (
         <div className="flex items-center mt-5 flex-col gap-5">
             <h1 className="text-3xl font-semibold">Your Cart</h1>
