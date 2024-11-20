@@ -14,20 +14,28 @@ datasource db {
 }
 
 model User {
-  id            String          @id @default(cuid())
+  id            String      @id @default(cuid())
   name          String?
-  email         String          @unique
+  email         String      @unique
   emailVerified DateTime?
   image         String?
-  accounts      Account[]
-  sessions      Session[]
+  majorid       String?
+  Cart          Cart?
+  schedule      Schedule?
+  planned       FuturePlan?
+
+  accounts Account[]
+  sessions Session[]
+  major    Major?     @relation(fields: [majorid], references: [id])
+
   // Optional for WebAuthn support
   Authenticator Authenticator[]
- 
+  Enrolled      Enrolled[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
- 
+
 model Account {
   userId            String
   type              String
@@ -40,33 +48,33 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
- 
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@id([provider, providerAccountId])
 }
- 
+
 model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
- 
+
 model VerificationToken {
   identifier String
   token      String
   expires    DateTime
- 
+
   @@id([identifier, token])
 }
- 
+
 // Optional for WebAuthn support
 model Authenticator {
   credentialID         String  @unique
@@ -77,8 +85,114 @@ model Authenticator {
   credentialDeviceType String
   credentialBackedUp   Boolean
   transports           String?
- 
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@id([userId, credentialID])
+}
+
+model Course {
+  id          String  @id @default(cuid())
+  department  String
+  code        String
+  credits     Int
+  honorsOnly  Boolean
+  title       String
+  description String?
+
+  semestersOffered Semester[]
+  majors           Major[] // Many-to-many to facilitate multiple majors needing the same course
+  sections         CourseSection[]
+  plan             FuturePlan[]
+
+  // Self-referencing one-to-many for prereqs
+  prerequisites   Course[] @relation("Prerequisites")
+  prerequisiteFor Course[] @relation("Prerequisites")
+}
+
+model CourseSection {
+  id         String @id @default(cuid())
+  courseId   String
+  catalogId  String
+  instructor String
+  timeSlotId String
+  location   String
+  capacity   Int
+
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  timeSlot TimeSlot @relation(fields: [timeSlotId], references: [id])
+
+  // Contains a status for both waitlisted and fully enrolled
+  classlist Enrolled[]
+  cart      Cart[]
+  schedule  Schedule[]
+}
+
+model TimeSlot {
+  id            String @id @default(cuid())
+  daysOfTheWeek String
+  startTime     String
+  endTime       String
+
+  courseSections CourseSection[]
+}
+
+model Enrolled {
+  id        String @id @default(cuid())
+  studentId String
+  sectionId String
+  status    String
+
+  courseSection CourseSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  user          User          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+}
+
+model Major {
+  id String @id @default(cuid())
+
+  courses Course[]
+  users   User[]
+}
+
+model Semester {
+  id           String @id @default(cuid())
+  semesterCode String
+
+  courses  Course[]
+  schedule Schedule[]
+  plan     FuturePlan[]
+  cart     Cart[]
+}
+
+model Cart {
+  id         String @id @default(cuid())
+  userId     String @unique
+  semesterId String @unique
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  semester Semester @relation(fields: [semesterId], references: [id], onDelete: Cascade)
+
+  courseSections CourseSection[]
+}
+
+model Schedule {
+  id         String @id @default(cuid())
+  userId     String @unique
+  semesterId String @unique
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  semester Semester @relation(fields: [semesterId], references: [id], onDelete: Cascade)
+
+  courseSections CourseSection[]
+}
+
+model FuturePlan {
+  id         String @id @default(cuid())
+  userId     String @unique
+  semesterId String @unique
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  semester Semester @relation(fields: [semesterId], references: [id], onDelete: Cascade)
+
+  courses Course[]
 }
