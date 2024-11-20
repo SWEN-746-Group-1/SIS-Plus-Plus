@@ -35,7 +35,7 @@ export default function RootLayout({
                                 <main className="grow">{children}</main>
                                 <footer className="h-24 flex flex-col justify-end items-center p-5">
                                     <p className="text-center">
-                                        © 2024 SWEN-746 Team 2
+                                        © 2024 SWEN-746 Team 1
                                     </p>
                                     <p>
                                         Contact{' '}
