@@ -157,6 +157,7 @@ async function main() {
                         description: course.description,
                         sections: {
                             create: Array.from({ length: 5 }, (_, i) => ({
+                                section: `${i + 1}`,
                                 instructor: `Instructor ${i + 1}`,
                                 location: `Room ${100 + i}`,
                                 capacity: 30 + i * 10,

@@ -1,17 +1,33 @@
 'use client'
 
+import { addToCart, removeFromCart } from "@/app/cart/addToCart";
+import { Button } from "./ui/button";
+import { TableCell, TableRow } from "./ui/table";
+import { ShoppingCart, Trash } from "lucide-react";
+
 export interface SectionListItemProps {
+    sectionId: string;
     sectionName: string;
     sectionTime: string;
     sectionSeats: string;
+    sectionInstructor: string;
+    sectionLocation: string;
+    inCart: boolean;
 }
 
 export function SectionListItem(props: SectionListItemProps) {
     return(
-        <div className="flex w-96">
-            <p className="w-1/12">{props.sectionName}</p>
-            <p className="w-7/12">{props.sectionTime}</p>
-            <p className="w-2/6">{props.sectionSeats}</p>
-        </div>
+        <TableRow>
+            <TableCell className="font-medium">{props.sectionName}</TableCell>
+            <TableCell>{props.sectionTime}</TableCell>
+            <TableCell>{props.sectionSeats}</TableCell>
+            <TableCell>{props.sectionInstructor}</TableCell>
+            <TableCell>{props.sectionLocation}</TableCell>
+            {props.inCart ? (
+                <TableCell className="text-right"><Button variant={"outline"} onClick={() => removeFromCart(props.sectionId)}><Trash /></Button></TableCell>
+            ) : (
+                <TableCell className="text-right"><Button onClick={() => addToCart(props.sectionId)}><ShoppingCart /></Button></TableCell>
+            )}
+          </TableRow>
     )
 }

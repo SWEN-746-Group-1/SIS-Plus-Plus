@@ -118,6 +118,8 @@ model Course {
 model CourseSection {
   id         String @id @default(cuid())
   courseId   String
+
+  section    String
   instructor String
   location   String
   capacity   Int
