@@ -13,6 +13,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum EnrollmentStatus {
+  ENROLLED
+  WAITLISTED
+}
+
 model User {
   id            String      @id @default(cuid())
   name          String?
@@ -20,7 +25,7 @@ model User {
   emailVerified DateTime?
   image         String?
   majorid       String?
-  Cart          Cart?
+  cart          Cart?
   schedule      Schedule?
   planned       FuturePlan?
 
@@ -30,7 +35,7 @@ model User {
 
   // Optional for WebAuthn support
   Authenticator Authenticator[]
-  Enrolled      Enrolled[]
+  enrolled      Enrolled[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -113,14 +118,14 @@ model Course {
 model CourseSection {
   id         String @id @default(cuid())
   courseId   String
-  catalogId  String
   instructor String
-  timeSlotId String
   location   String
   capacity   Int
 
   course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  timeSlot TimeSlot @relation(fields: [timeSlotId], references: [id])
+
+  // One time slot per section. its gonna make no sense to look up current timeslots for a section to match it.
+  timeSlot TimeSlot?
 
   // Contains a status for both waitlisted and fully enrolled
   classlist Enrolled[]
@@ -130,25 +135,32 @@ model CourseSection {
 
 model TimeSlot {
   id            String @id @default(cuid())
-  daysOfTheWeek String
+  daysOfTheWeek String[]
   startTime     String
   endTime       String
 
-  courseSections CourseSection[]
+  courseSectionId String @unique
+  
+  courseSection CourseSection @relation(fields: [courseSectionId], references: [id], onDelete: Cascade)
+
 }
 
 model Enrolled {
   id        String @id @default(cuid())
   studentId String
   sectionId String
-  status    String
+  status    EnrollmentStatus
+  order    Int @default(0)
 
   courseSection CourseSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   user          User          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([sectionId, order])
 }
 
 model Major {
   id String @id @default(cuid())
+  name String
 
   courses Course[]
   users   User[]
@@ -161,16 +173,16 @@ model Semester {
   courses  Course[]
   schedule Schedule[]
   plan     FuturePlan[]
-  cart     Cart[]
 }
 
 model Cart {
   id         String @id @default(cuid())
   userId     String @unique
-  semesterId String @unique
+
+  // decided that changing the semester will empty the cart
+  // semesterId String @unique
 
   user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  semester Semester @relation(fields: [semesterId], references: [id], onDelete: Cascade)
 
   courseSections CourseSection[]
 }
