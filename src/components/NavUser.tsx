@@ -119,7 +119,7 @@ export default function NavUser() {
                                 Log Out
                             </DropdownMenuItem>
                         ) : (
-                            <DropdownMenuItem onClick={() => signIn('google')}>
+                            <DropdownMenuItem onClick={() => signIn()}>
                                 <LogIn />
                                 Log In
                             </DropdownMenuItem>
