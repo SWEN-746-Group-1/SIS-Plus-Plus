@@ -152,6 +152,8 @@ model Enrolled {
   studentId String
   sectionId String
   status    EnrollmentStatus
+
+  // Order of enrollment in the classlist. For waitlisting
   order    Int @default(0)
 
   courseSection CourseSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
