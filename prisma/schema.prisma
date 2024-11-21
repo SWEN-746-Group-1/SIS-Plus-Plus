@@ -100,6 +100,7 @@ model Course {
   id          String  @id @default(cuid())
   department  String
   code        String
+  fullCode    String
   credits     Int
   honorsOnly  Boolean
   title       String

@@ -8,7 +8,17 @@ export default async function SearchPage({
 }: {
     searchParams: Promise<{ q: string }>;
 }) {
-    const { q: string } = await searchParams;
+    const { q: search } = await searchParams;
+
+    let fullSearch = search;
+
+    if (!search) {
+        fullSearch = '';
+    }
+
+    fullSearch = fullSearch.trim()
+
+    const trimmedSearch = fullSearch.trim().replace(/ /g, '-').toLowerCase();
 
     const session = await auth();
 
@@ -21,14 +31,28 @@ export default async function SearchPage({
             OR: [
                 {
                     code: {
-                        contains: string,
+                        contains: fullSearch,
+                        mode: 'insensitive',
                     },
                 },
                 {
                     title: {
-                        contains: string,
+                        contains: fullSearch,
+                        mode: 'insensitive',
                     },
                 },
+                {
+                    department: {
+                        contains: fullSearch,
+                        mode: 'insensitive',
+                    },
+                },
+                {
+                    fullCode: {
+                        contains: trimmedSearch,
+                        mode: 'insensitive',
+                    }
+                }
             ],
         },
         include: {

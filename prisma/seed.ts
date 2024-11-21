@@ -151,6 +151,7 @@ async function main() {
                     create: major.courses.map((course) => ({
                         department: course.department,
                         code: course.code,
+                        fullCode: `${course.department}-${course.code}`,
                         credits: course.credits,
                         honorsOnly: course.honorsOnly,
                         title: course.title,
