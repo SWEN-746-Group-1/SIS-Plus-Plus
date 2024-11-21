@@ -12,7 +12,7 @@ export interface SectionListItemProps {
     sectionSeats: string;
     sectionInstructor: string;
     sectionLocation: string;
-    inCart: boolean;
+    inCart: boolean | null;
 }
 
 export function SectionListItem(props: SectionListItemProps) {
@@ -23,11 +23,14 @@ export function SectionListItem(props: SectionListItemProps) {
             <TableCell>{props.sectionSeats}</TableCell>
             <TableCell>{props.sectionInstructor}</TableCell>
             <TableCell>{props.sectionLocation}</TableCell>
-            {props.inCart ? (
+            {
+                
+            }
+            {props.inCart !== null ? props.inCart ? (
                 <TableCell className="text-right"><Button variant={"outline"} onClick={() => removeFromCart(props.sectionId)}><Trash /></Button></TableCell>
             ) : (
                 <TableCell className="text-right"><Button onClick={() => addToCart(props.sectionId)}><ShoppingCart /></Button></TableCell>
-            )}
+            ) : null}
           </TableRow>
     )
 }

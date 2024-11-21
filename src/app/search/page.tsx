@@ -22,8 +22,12 @@ export default async function SearchPage({
 
     const session = await auth();
 
+    let userId
+
     if (!session || !session.user || !session.user.id) {
-        throw new Error('You must be logged in to search for courses');
+        userId = null;
+    } else {
+        userId = session.user.id;
     }
 
     const courses = await prisma.course.findMany({
@@ -65,14 +69,21 @@ export default async function SearchPage({
         }
     });
 
-    const cart = await prisma.cart.findFirst({
-        where: {
-            userId: session.user.id,
-        },
-        include: {
-            courseSections: true,
-        },
-    });
+    let cart
+
+    if (!userId) {
+        cart = null;
+    } else {
+        cart = await prisma.cart.findFirst({
+            where: {
+                userId,
+            },
+            include: {
+                courseSections: true,
+            },
+        });
+    }
+
 
     console.log(cart);
 
@@ -91,7 +102,7 @@ export default async function SearchPage({
                             sectionSeats: `${section.classlist.filter((student) => student.status === 'ENROLLED').length}/${section.capacity} (${section.classlist.filter((student) => student.status === 'WAITLISTED').length} waitlisted)`,
                             sectionInstructor: section.instructor,
                             sectionLocation: section.location,
-                            inCart: cart?.courseSections.some((cartSection) => cartSection.id === section.id) || false,
+                            inCart: cart ? cart?.courseSections.some((cartSection) => cartSection.id === section.id) || false : null,
                         }))
                     } />
                 ))}
