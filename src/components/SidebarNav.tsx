@@ -47,6 +47,15 @@ export default function SidebarNav() {
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                 </SidebarMenuSub>
+                <SidebarMenuSub>
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild>
+                        <Link href="/cart">
+                          <span>Cart</span>
+                        </Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                </SidebarMenuSub>
               </CollapsibleContent>
             </SidebarMenuItem>
           </Collapsible>
