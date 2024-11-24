@@ -1,5 +1,5 @@
-import { prisma } from '@/lib/prisma';
-import { Cart, CourseSection } from '@prisma/client'
+//import { prisma } from '@/lib/prisma';
+import { CourseSection } from '@prisma/client'
 import {auth} from "@/lib/auth";
 const example_courses = [
     {name: "A", id: 0, prof:"Bob",date:"MWF"},
@@ -8,7 +8,7 @@ const example_courses = [
 ];
 
 export default async function YourCart() {
-    const session = await auth()
+    //const session = await auth()
 
     if(!session) {
         return (
