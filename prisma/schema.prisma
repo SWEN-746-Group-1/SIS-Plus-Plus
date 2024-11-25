@@ -36,6 +36,7 @@ model User {
   // Optional for WebAuthn support
   Authenticator Authenticator[]
   enrolled      Enrolled[]
+  completedCourses Course[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -110,6 +111,7 @@ model Course {
   majors           Major[] // Many-to-many to facilitate multiple majors needing the same course
   sections         CourseSection[]
   plan             FuturePlan[]
+  user             User[]
 
   // Self-referencing one-to-many for prereqs
   prerequisites   Course[] @relation("Prerequisites")
