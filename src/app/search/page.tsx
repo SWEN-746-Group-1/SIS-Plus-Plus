@@ -1,7 +1,7 @@
-import { prisma } from '@/lib/prisma';
 import Search from './Search';
 import CourseListItem from '@/components/CourseListItem';
 import { auth } from '@/lib/auth';
+import getCourses from './searchData';
 
 export default async function SearchPage({
     searchParams,
@@ -9,17 +9,6 @@ export default async function SearchPage({
     searchParams: Promise<{ q: string }>;
 }) {
     const { q: search } = await searchParams;
-
-    let fullSearch = search;
-
-    if (!search) {
-        fullSearch = '';
-    }
-
-    fullSearch = fullSearch.trim()
-
-    const trimmedSearch = fullSearch.trim().replace(/ /g, '-').toLowerCase();
-
     const session = await auth();
 
     let userId
@@ -30,62 +19,8 @@ export default async function SearchPage({
         userId = session.user.id;
     }
 
-    const courses = await prisma.course.findMany({
-        where: {
-            OR: [
-                {
-                    code: {
-                        contains: fullSearch,
-                        mode: 'insensitive',
-                    },
-                },
-                {
-                    title: {
-                        contains: fullSearch,
-                        mode: 'insensitive',
-                    },
-                },
-                {
-                    department: {
-                        contains: fullSearch,
-                        mode: 'insensitive',
-                    },
-                },
-                {
-                    fullCode: {
-                        contains: trimmedSearch,
-                        mode: 'insensitive',
-                    }
-                }
-            ],
-        },
-        include: {
-            sections: {
-                include: {
-                    timeSlot: true,
-                    classlist: true,
-                }
-            },
-        }
-    });
+    const courses = await getCourses(search, userId);
 
-    let cart
-
-    if (!userId) {
-        cart = null;
-    } else {
-        cart = await prisma.cart.findFirst({
-            where: {
-                userId,
-            },
-            include: {
-                courseSections: true,
-            },
-        });
-    }
-
-
-    console.log(cart);
 
     return (
         <div className="flex w-full items-center mt-5 flex-col gap-5">
@@ -94,17 +29,7 @@ export default async function SearchPage({
 
             <div className='w-full p-4 flex flex-col gap-5 items-center'>
                 {courses.map((course) => (
-                    <CourseListItem courseId={`${course.department}-${course.code}`} courseName={course.title} prereqsMet={true} key={course.id} sections={
-                        course.sections.map((section) => ({
-                            sectionId: section.id,
-                            sectionName: section.section,
-                            sectionTime: section.timeSlot?.endTime && section.timeSlot?.startTime && `${section.timeSlot?.startTime} - ${section.timeSlot?.endTime}` || 'TBA',
-                            sectionSeats: `${section.classlist.filter((student) => student.status === 'ENROLLED').length}/${section.capacity} (${section.classlist.filter((student) => student.status === 'WAITLISTED').length} waitlisted)`,
-                            sectionInstructor: section.instructor,
-                            sectionLocation: section.location,
-                            inCart: cart ? cart?.courseSections.some((cartSection) => cartSection.id === section.id) || false : null,
-                        }))
-                    } />
+                    <CourseListItem courseId={`${course.department}-${course.code}`} courseName={course.title} prereqsMet={true} key={course.id} sections={course.sections} />
                 ))}
             </div>
         </div>
