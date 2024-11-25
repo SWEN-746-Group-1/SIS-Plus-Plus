@@ -73,24 +73,37 @@ export default async function EnrolledPage() {
   }
 
   return (
-    <div>
-      <h1>Enrolled Sections</h1>
-      {enrollments.length > 0 ? (
-        <ul>
-          {enrollments.map((enrollment) => (
-            <li key={enrollment.id}>
-              <strong>Section: {enrollment.courseSection.section}</strong><br />
-              Instructor: {enrollment.courseSection.instructor} <br />
-              Location: {enrollment.courseSection.location} <br />
-              Course: {enrollment.courseSection.course.title} <br />
-              Time: {enrollment.courseSection.timeSlot?.startTime} - {enrollment.courseSection.timeSlot?.endTime}<br />
+  <div className="flex w-full ml-5 mt-5 flex-col gap-5">
+    <h1 className="text-3xl font-semibold text-center">Enrolled Courses</h1>
+    {enrollments.length > 0 ? (
+      <ul className="w-full max-w-sm space-y-2">
+        {enrollments.map((enrollment) => (
+          <li
+            key={enrollment.id}
+            className="divide-orange-400 border-solid border-orange-500 p-2 bg-gray-500 rounded-md"
+          >
+            <div className="font-semibold">Course: {enrollment.courseSection.course.title}</div>
+            <div>
+              Section: {enrollment.courseSection.section} - {enrollment.courseSection.instructor}
+            </div>
+            <div>
+              Location: {enrollment.courseSection.location}
+            </div>
+            <div>
+              Time: {enrollment.courseSection.timeSlot?.startTime} - {enrollment.courseSection.timeSlot?.endTime}
+            </div>
+            <div>
               Days: {enrollment.courseSection.timeSlot?.daysOfTheWeek.join(', ')}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No enrolled sections found.</p>
-      )}
-    </div>
+            </div>
+            <div>
+                  Status: {enrollment.status === 'ENROLLED' ? 'Enrolled' : 'Waitlisted'}
+            </div>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p>No enrolled sections found.</p>
+    )}
+  </div>
   );
 }
