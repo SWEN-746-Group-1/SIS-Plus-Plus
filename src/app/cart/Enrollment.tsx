@@ -3,7 +3,8 @@
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
-export async function Enrollment() {
+
+export async function Enroll() {
     const session = await auth();
 
     if (!session || !session.user || !session.user.id) {
@@ -23,9 +24,22 @@ export async function Enrollment() {
     //Add loop through courseSections
     //Add validation within loop
     await prisma.enrolled.create({
-            studentId: session.user.id,
-            section: {
-
-            }
+        data:   {
+            //Wants comma or colon here, although I have no clue where
+            courses.map((course: any ) => ({
+                User: {
+                    connect: {
+                        studentId = course.cart.userId,
+                    }
+                },
+                CourseSection: {
+                    connect: {
+                        sectionID = course.courseSection.id,
+                    }
+                }
+            })),
+            status: "ENROLLED",
+        }
     })
+
 }
