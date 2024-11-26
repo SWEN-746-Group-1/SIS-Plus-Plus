@@ -4,6 +4,7 @@ import { removeFromCart } from "@/app/cart/addToCart";
 import { Button } from "./ui/button";
 import { TableCell, TableRow } from "./ui/table";
 import { Trash } from "lucide-react";
+// import { DialogTrigger } from "./ui/dialog";
 
 export interface CartItemProps {
     sectionId: string;
@@ -23,6 +24,6 @@ export function CartItem(props: CartItemProps) {
             {/* <TableCell>{props.sectionInstructor}</TableCell>
             <TableCell>{props.sectionLocation}</TableCell> */}
             <TableCell className="text-right"><Button variant={"outline"} onClick={() => removeFromCart(props.sectionId)}><Trash /></Button></TableCell>
-          </TableRow>
+        </TableRow>
     )
 }

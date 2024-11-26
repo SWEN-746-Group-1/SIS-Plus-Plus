@@ -3,6 +3,9 @@ import { auth } from '@/lib/auth';
 import { CartItem } from '@/components/CartItem';
 import { Table, TableBody, TableRow, TableHead, TableHeader } from '@/components/ui/table'
 import { Enrolled, EnrollmentStatus, TimeSlot } from '@prisma/client';
+// import { Dialog } from '@/components/ui/dialog';
+// import SectionDetailDialog from '@/components/SectionDetailDialog';
+// import SectionDetailCard from '@/components/SectionDetailCard';
 
 export default async function CartPage() {
     const session = await auth();
@@ -65,17 +68,17 @@ export default async function CartPage() {
                 <TableBody>
                     {cart?.courseSections.map((section) => {
                         return (
-                            <CartItem 
-                                sectionId={section.courseId} 
-                                sectionName={`${section.course.fullCode}.${section.section}`} 
-                                sectionTime={formatTimeSlot(section.timeSlot)} 
-                                sectionSeats={formatSeats(section.classlist, section.capacity)}
-                                key={section.id}/>
+                                <CartItem 
+                                    sectionId={section.courseId} 
+                                    sectionName={`${section.course.fullCode}.${section.section}`} 
+                                    sectionTime={formatTimeSlot(section.timeSlot)} 
+                                    sectionSeats={formatSeats(section.classlist, section.capacity)}
+                                    key={section.id} 
+                                />
                             )
                     })}
                 </TableBody>
             </Table>
         </div>
-        
     );
 }
