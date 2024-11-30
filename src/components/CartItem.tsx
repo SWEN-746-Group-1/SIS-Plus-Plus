@@ -11,19 +11,25 @@ export interface CartItemProps {
     sectionName: string;
     sectionTime: string;
     sectionSeats: string;
-    // sectionInstructor: string;
-    // sectionLocation: string;
+    sectionInstructor: string;
+    onClick: any
+    // credits: number;
 }
 
 export function CartItem(props: CartItemProps) {
+
     return(
-        <TableRow>
-            <TableCell className="font-medium">{props.sectionName}</TableCell>
-            <TableCell>{props.sectionTime}</TableCell>
-            <TableCell>{props.sectionSeats}</TableCell>
-            {/* <TableCell>{props.sectionInstructor}</TableCell>
-            <TableCell>{props.sectionLocation}</TableCell> */}
-            <TableCell className="text-right"><Button variant={"outline"} onClick={() => removeFromCart(props.sectionId)}><Trash /></Button></TableCell>
+        <TableRow onClick={props.onClick}>
+            <TableCell className="w-2/12 font-medium">{props.sectionName}</TableCell>
+            <TableCell className="w-3/12">{props.sectionTime}</TableCell>
+            <TableCell className="w-3/12">{props.sectionInstructor}</TableCell>
+            {/* <TableCell className="w-1/12">{props.credits}</TableCell> */}
+            <TableCell className="w-2/12">{props.sectionSeats}</TableCell>
+            <TableCell className="w-1/12 text-right">
+                <Button variant={"outline"} className="hover:bg-red-600" onClick={() => removeFromCart(props.sectionId)}>
+                    <Trash />
+                </Button>
+            </TableCell>
         </TableRow>
     )
 }

@@ -1,11 +1,14 @@
 'use client';
 
+import { TimeSlot, Enrolled, EnrollmentStatus, Course } from "@prisma/client";
+
 import {
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogFooter,
     DialogTitle,
+    Dialog,
 } from "@/components/ui/dialog"
 
 import {
@@ -16,27 +19,38 @@ import {
 
 // import { Button } from "./ui/button";
 
-export default function SectionDetailDialog() {
+export interface SectionDisplayInfo {
+    id: string,
+    courseId: string,
+    section: string,
+    instructor: string,
+    location: string,
+    capacity: number,
+    course: Course | null,
+    timeSlot: TimeSlot | null,
+    classlist: Array<Enrolled>
+}
+
+export function SectionDetailDialog() {
     return(
-        <div>
-            <DialogHeader className="flex flex-row justify-between">
-                <div className="space-y-2">
-                    <DialogTitle>SWEN-746.01</DialogTitle>
-                    <DialogDescription>Model-Driven Development</DialogDescription>
-                </div>
-                <div className="flex flex-row justify-evenly space-x-8 m-x-12 my-0 p-0">
+            <DialogContent className="flex flex-col max-w-4xl">
+                <DialogHeader className="flex flex-row justify-between">
                     <div className="space-y-2">
-                        <DialogDescription>Open 27/30(+0)</DialogDescription>
+                        <DialogTitle>SWEN-746.01</DialogTitle>
+                        <DialogDescription>Model-Driven Development</DialogDescription>
                     </div>
-                    <div className="space-y-2">
-                        <DialogDescription>3 Credits</DialogDescription>
+                    <div className="flex flex-row justify-evenly space-x-8 m-x-12 my-0 p-0 pr-8">
+                        <div className="space-y-2">
+                            <DialogDescription>Open 27/30(+0)</DialogDescription>
+                        </div>
+                        <div className="space-y-2">
+                            <DialogDescription>3 Credits</DialogDescription>
+                        </div>
+                        <div className="space-y-2">
+                            <DialogDescription>Tue Thu 12:30 PM - 1:45 PM</DialogDescription>
+                        </div>
                     </div>
-                    <div className="space-y-2">
-                        <DialogDescription>Tue Thu 12:30 PM - 1:45 PM</DialogDescription>
-                    </div>
-                </div>
-            </DialogHeader>
-            <DialogContent className="flex max-w-4xl">
+                </DialogHeader>
                 <div>
                     <DialogTitle>Course Description</DialogTitle>
                     <Collapsible className="my-2">
@@ -53,36 +67,36 @@ export default function SectionDetailDialog() {
                         </div>
                     </Collapsible>
                 </div>
-            </DialogContent>
-            <DialogContent className="flex flex-row justify-between min-w-4xl">
-                <DialogContent>
-                    <DialogTitle className="my-2">Section Details</DialogTitle>
-                    <DialogDescription className="flex min-w-48 flex-col">
-                        <div className="flex flex-row justify-between">
-                            <p>Location</p>
-                            <p>GOL-1550</p>
-                        </div>
-                        <div className="flex flex-row justify-between">
-                            <p>Instructor</p>
-                            <p>Yiming Tang</p>
-                        </div>
-                    </DialogDescription>
-                </DialogContent>
-                <DialogContent>
-                    <DialogTitle className="my-2">Course Details</DialogTitle>
-                    <DialogDescription className="flex min-w-48 flex-col">
-                        <div className="flex flex-row justify-between">
-                            
-                        </div>
-                        <div className="flex flex-row justify-between">
-                            <p>Instructor</p>
-                            <p>Yiming Tang</p>
-                        </div>
-                    </DialogDescription>
-                </DialogContent>
-            </DialogContent>
-            <DialogFooter>
-            </DialogFooter>
-        </div>
+                <div className="flex flex-row justify-between">
+                    <div className="flex flex-col justify-between min-w-4xl">
+                        <DialogTitle className="my-2">Section Details</DialogTitle>
+                        <DialogDescription className="flex min-w-48 flex-col">
+                            <div className="flex flex-row justify-between">
+                                <p>Location</p>
+                                <p>GOL-1550</p>
+                            </div>
+                            <div className="flex flex-row justify-between">
+                                <p>Instructor</p>
+                                <p>Yiming Tang</p>
+                            </div>
+                        </DialogDescription>
+                    </div>
+                    <div>
+                        <DialogTitle className="my-2">Course Details</DialogTitle>
+                        <DialogDescription className="flex min-w-48 flex-col">
+                            <div className="flex flex-col justify-between">
+                                
+                            </div>
+                            <div className="flex flex-row justify-between">
+                                <p>Instructor</p>
+                                <p>Yiming Tang</p>
+                            </div>
+                        </DialogDescription>
+                    </div>
+                </div>
+                
+                <DialogFooter>
+                </DialogFooter>
+        </DialogContent>
     )
 }
