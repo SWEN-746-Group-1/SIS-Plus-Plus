@@ -2,14 +2,31 @@
 
 import React, { useState } from 'react';
 
+type TimeSlot = {
+  startTime: string;
+  endTime: string;
+  daysOfTheWeek: string[];
+};
+
+type Course = {
+  id: string;
+  department: string;
+  code: string;
+  fullCode: string;
+  credits: number;
+  honorsOnly: boolean;
+  title: string;
+  description: string | null;
+};
+
 type CourseSection = {
   id: string;
   section: string;
   instructor: string;
   location: string;
-  startTime: string;
-  endTime: string;
-  daysOfTheWeek: string[];
+  capacity: number;
+  course: Course;
+  timeSlot: TimeSlot | null;
 };
 
 type SwapButtonClientProps = {
@@ -60,7 +77,11 @@ const SwapButtonClient: React.FC<SwapButtonClientProps> = ({
                       {section.location}
                     </p>
                     <p className="text-gray-700 dark:text-gray-300">
-                      {section.startTime} - {section.endTime}
+                      {section.timeSlot ? (
+                        <>
+                          {section.timeSlot.startTime || 'pending'} - {section.timeSlot.endTime || 'pending'}
+                        </>
+                      ) : ('pending')}
                     </p>
                     <button
                       className="mt-2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition"

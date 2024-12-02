@@ -1,14 +1,31 @@
 import { prisma } from '@/lib/prisma';
 import SwapButtonClient from './SwapButtonClient';
 
+type TimeSlot = {
+  startTime: string;
+  endTime: string;
+  daysOfTheWeek: string[];
+};
+
+type Course = {
+  id: string;
+  department: string;
+  code: string;
+  fullCode: string;
+  credits: number;
+  honorsOnly: boolean;
+  title: string;
+  description: string | null;
+};
+
 type CourseSection = {
   id: string;
   section: string;
   instructor: string;
   location: string;
-  startTime: string;
-  endTime: string;
-  daysOfTheWeek: string[];
+  capacity: number;
+  course: Course;
+  timeSlot: TimeSlot | null;
 };
 
 type SwapButtonServerProps = {
@@ -23,6 +40,7 @@ async function getCourseSections(courseId: string): Promise<CourseSection[]> {
     },
     include: {
       timeSlot: true,
+      course: true,
     },
   });
 
@@ -31,9 +49,15 @@ async function getCourseSections(courseId: string): Promise<CourseSection[]> {
     section: section.section,
     instructor: section.instructor,
     location: section.location,
-    startTime: section.timeSlot?.startTime ?? '',
-    endTime: section.timeSlot?.endTime ?? '',
-    daysOfTheWeek: section.timeSlot?.daysOfTheWeek ?? [],
+    capacity: section.capacity,
+    course: section.course,
+    timeSlot: section.timeSlot
+      ? {
+          startTime: section.timeSlot.startTime,
+          endTime: section.timeSlot.endTime,
+          daysOfTheWeek: section.timeSlot.daysOfTheWeek,
+        }
+      : null,
   })) || [];
 }
 
