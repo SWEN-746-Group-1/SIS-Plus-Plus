@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
-import SwapButton from '@/components/SwapButtonClient';
+import SwapButton from '@/components/SwapButtonServer';
 
 type TimeSlot = {
   startTime: string;

@@ -26,8 +26,6 @@ async function getCourseSections(courseId: string): Promise<CourseSection[]> {
     },
   });
 
-  console.log('Retrieved courseSections:', courseSections);
-
   return courseSections?.map((section) => ({
     id: section.id,
     section: section.section,
@@ -43,12 +41,9 @@ export default async function SwapButtonServer({
     enrollmentId,
     courseId,
   }: SwapButtonServerProps) {
-    console.log('Received courseId in SwapButtonServer:', courseId);
   
     const availableSections = await getCourseSections(courseId);
-  
-    console.log('Available sections for courseId:', availableSections);
-  
+
     return (
       <SwapButtonClient
         enrollmentId={enrollmentId}
