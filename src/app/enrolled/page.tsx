@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
+import SwapButton from '@/components/SwapButtonClient';
 
 type TimeSlot = {
   startTime: string;
@@ -73,37 +74,64 @@ export default async function EnrolledPage() {
   }
 
   return (
-  <div className="flex w-full ml-5 mt-5 flex-col gap-5">
-    <h1 className="text-3xl font-semibold text-center">Enrolled Courses</h1>
-    {enrollments.length > 0 ? (
-      <ul className="w-full max-w-sm space-y-2">
-        {enrollments.map((enrollment) => (
-          <li
-            key={enrollment.id}
-            className="divide-orange-400 border-solid border-orange-500 p-2 bg-gray-500 rounded-md"
-          >
-            <div className="font-semibold">Course: {enrollment.courseSection.course.title}</div>
-            <div>
-              Section: {enrollment.courseSection.section} - {enrollment.courseSection.instructor}
-            </div>
-            <div>
-              Location: {enrollment.courseSection.location}
-            </div>
-            <div>
-              Time: {enrollment.courseSection.timeSlot?.startTime} - {enrollment.courseSection.timeSlot?.endTime}
-            </div>
-            <div>
-              Days: {enrollment.courseSection.timeSlot?.daysOfTheWeek.join(', ')}
-            </div>
-            <div>
-                  Status: {enrollment.status === 'ENROLLED' ? 'Enrolled' : 'Waitlisted'}
-            </div>
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <p>No enrolled sections found.</p>
-    )}
-  </div>
+    <div className="flex flex-col w-full ml-5 mt-5 gap-6">
+      <h1 className="text-3xl font-bold text-center text-gray-900 dark:text-gray-100">
+        Enrolled Courses
+      </h1>
+      {enrollments.length > 0 ? (
+        <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-7xl mx-auto">
+          {enrollments.map((enrollment) => (
+            <li
+              key={enrollment.id}
+              className="border border-gray-300 dark:border-gray-700 shadow-md p-4 rounded-lg bg-white dark:bg-gray-800 flex flex-col justify-between"
+            >
+              <div>
+                <div className="mb-2">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+                    {enrollment.courseSection.course.title}
+                  </h2>
+                </div>
+                <div className="text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                  <p>
+                    <strong>Section:</strong> {enrollment.courseSection.section} -{' '}
+                    {enrollment.courseSection.instructor}
+                  </p>
+                  <p>
+                    <strong>Location:</strong> {enrollment.courseSection.location}
+                  </p>
+                  <p>
+                    <strong>Time:</strong>{' '}
+                    {enrollment.courseSection.timeSlot?.startTime} -{' '}
+                    {enrollment.courseSection.timeSlot?.endTime}
+                  </p>
+                  <p>
+                    <strong>Days:</strong>{' '}
+                    {enrollment.courseSection.timeSlot?.daysOfTheWeek.join(', ')}
+                  </p>
+                  <p>
+                    <strong>Status:</strong>{' '}
+                    <span
+                      className={`font-medium ${
+                        enrollment.status === 'ENROLLED'
+                          ? 'text-green-600 dark:text-green-400'
+                          : 'text-orange-600 dark:text-orange-400'
+                      }`}
+                    >
+                      {enrollment.status === 'ENROLLED' ? 'Enrolled' : 'Waitlisted'}
+                    </span>
+                  </p>
+                </div>
+              </div>
+              <SwapButton enrollmentId={enrollment.id} courseId={enrollment.courseSection.course.id} />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-center text-gray-600 dark:text-gray-400">
+          No enrolled sections found.
+        </p>
+      )}
+    </div>
   );
+    
 }
