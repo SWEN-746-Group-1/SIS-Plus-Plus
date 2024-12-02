@@ -98,7 +98,7 @@ test('getSearchCoursesLoggedOut', async () => {
 
 test('getSearchCoursesLoggedIn - In Cart', async () => {
     prismaMock.course.findMany.mockResolvedValue([course]);
-    prismaMock.cart.findFirst.mockResolvedValue(cart1);
+    prismaMock.cart.upsert.mockResolvedValue(cart1);
     const courses = await getCourses('C', '1');
     expect(courses).toEqual([
         {
@@ -126,7 +126,7 @@ test('getSearchCoursesLoggedIn - In Cart', async () => {
 
 test('getSearchCoursesLoggedIn - Not In Cart', async () => {
   prismaMock.course.findMany.mockResolvedValue([course]);
-  prismaMock.cart.findFirst.mockResolvedValue(cart2);
+  prismaMock.cart.upsert.mockResolvedValue(cart2);
   const courses = await getCourses('C', '1');
   expect(courses).toEqual([
       {
