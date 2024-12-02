@@ -57,4 +57,5 @@ export async function removeFromCart(sectionId: string) {
     });
 
     revalidatePath('/search');
+    revalidatePath('/cart');
 }

@@ -1,6 +1,6 @@
 'use client'
 
-import { TimeSlot, Enrolled, EnrollmentStatus, Course } from "@prisma/client";
+import { formatTimeSlot, formatSeats } from "@/lib/sisUtils";
 
 import {
     Table,
@@ -20,8 +20,8 @@ export interface CartListProps {
 
 export function CartList(props: CartListProps) {
 
-    var details: SectionDisplayInfo | null
-    var showDetails
+    let details;
+    let showDetails;
 
     function setDetails(value: SectionDisplayInfo) {
         details = value;
@@ -31,23 +31,10 @@ export function CartList(props: CartListProps) {
         showDetails = value;
     }
 
-    function formatTimeSlot(timeSlot: TimeSlot | null) {
-        if(timeSlot === null) {
-            return "TBD"
-        }
-        return `${timeSlot.daysOfTheWeek.join("")} ${timeSlot.startTime}-${timeSlot.endTime}`
-    }
-    
-    function formatSeats(classlist: Enrolled[], capacity: number) {
-        const numEnrolled = classlist.filter((enrollment) => {return enrollment.status === EnrollmentStatus.ENROLLED}).length;
-        const numWaitlisted = classlist.length - numEnrolled;
-        return `${numEnrolled}/${capacity} (+${numWaitlisted})`;
-    }
-
     return(
         <div className="pl-10">
             <Dialog open={showDetails} onOpenChange={setShowDetails}>
-                <Table className="w-3/4">
+                <Table className="w-full">
                     <TableHeader>
                         <TableRow>
                             <TableHead>Section</TableHead>
@@ -75,7 +62,7 @@ export function CartList(props: CartListProps) {
                     </TableBody>
                 </Table>
 
-                <SectionDetailDialog />
+                <SectionDetailDialog sectionInfo={details}/>
             </Dialog>
         </div>
     )

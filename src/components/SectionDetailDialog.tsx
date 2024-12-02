@@ -1,6 +1,6 @@
 'use client';
 
-import { TimeSlot, Enrolled, EnrollmentStatus, Course } from "@prisma/client";
+import { TimeSlot, Enrolled, Course } from "@prisma/client";
 
 import {
     DialogContent,
@@ -8,7 +8,6 @@ import {
     DialogHeader,
     DialogFooter,
     DialogTitle,
-    Dialog,
 } from "@/components/ui/dialog"
 
 import {
@@ -31,12 +30,16 @@ export interface SectionDisplayInfo {
     classlist: Array<Enrolled>
 }
 
-export function SectionDetailDialog() {
+export interface SectionDetailProps {
+    sectionInfo: SectionDisplayInfo | undefined
+}
+
+export function SectionDetailDialog(props: SectionDetailProps) {
     return(
             <DialogContent className="flex flex-col max-w-4xl">
                 <DialogHeader className="flex flex-row justify-between">
                     <div className="space-y-2">
-                        <DialogTitle>SWEN-746.01</DialogTitle>
+                        <DialogTitle>{props.sectionInfo ? props.sectionInfo.course?.fullCode+"."+props.sectionInfo.section : "TBD"}</DialogTitle>
                         <DialogDescription>Model-Driven Development</DialogDescription>
                     </div>
                     <div className="flex flex-row justify-evenly space-x-8 m-x-12 my-0 p-0 pr-8">
