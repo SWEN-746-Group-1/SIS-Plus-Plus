@@ -8,6 +8,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import getCourses from './coursesData';
+import { Check, CircleDot, X } from 'lucide-react';
 
 export default async function Page() {
     const session = await auth();
@@ -19,23 +20,30 @@ export default async function Page() {
 
     const courses = await getCourses(session.user.id);
     return (
-        <div className="flex w-full items-center mt-5 flex-col gap-5">
+        <div className="flex max-w-7xl m-auto items-center mt-5 flex-col gap-5 p-10">
             <h1 className="text-3xl font-semibold">Course History</h1>
 
             <Table>
                 <TableHeader>
-                    <TableRow>
-                        <TableHead className="w-[100px]">Course</TableHead>
-                        <TableHead className="text-right">Status</TableHead>
+                    <TableRow className="flex justify-between">
+                        <TableHead className="">Course</TableHead>
+                        <TableHead className="">Status</TableHead>
                     </TableRow>
                 </TableHeader>
 
                 <TableBody>
-
                     {courses.map((course, i) => (
-                        <TableRow key={i}>
+                        <TableRow className="flex justify-between" key={i}>
                             <TableCell>{course.code}</TableCell>
-                            <TableCell className="text-right">{course.status}</TableCell>
+                            <TableCell className="text-right">
+                                {course.status === 'COMPLETE' ? (
+                                    <Check className="text-green-500 text-right" />
+                                ) : course.status === 'IN_PROGRESS' ? (
+                                    <CircleDot className="text-yellow-500 text-right" />
+                                ) : (
+                                    <X className="text-red-500 text-right" />
+                                )}
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

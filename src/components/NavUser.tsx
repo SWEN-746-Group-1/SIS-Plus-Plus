@@ -5,6 +5,7 @@ import {
     ChevronsUpDown,
     LogIn,
     LogOut,
+    NotepadText,
 } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -104,6 +105,12 @@ export default function NavUser() {
                                         <Link href="/account">
                                             <BadgeCheck />
                                             Account
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link href="/courses">
+                                            <NotepadText />
+                                            Course History
                                         </Link>
                                     </DropdownMenuItem>
                                 </DropdownMenuGroup>
