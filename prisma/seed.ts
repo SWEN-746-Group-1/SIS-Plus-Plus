@@ -165,8 +165,8 @@ async function main() {
                                 timeSlot: {
                                     create: {
                                         daysOfTheWeek: ['M', 'W', 'F'],
-                                        startTime: `0${8 + i}:00`, // Dynamic start times
-                                        endTime: `0${8 + i}:50`, // Dynamic end times
+                                        startTime: (8 + i < 10) ? `0${8 + i}:00` : `${8 + i}:00`, // Dynamic start times
+                                        endTime: (8 + i < 10) ? `0${8 + i}:50` : `${8 + i}:50`, // Dynamic end times
                                     },
                                 },
                             })),
