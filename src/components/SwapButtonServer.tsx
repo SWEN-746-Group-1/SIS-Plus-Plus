@@ -72,7 +72,7 @@ async function handleSelectSection(sectionId: string, userId: string, enrollment
 
     await addToCart(sectionId, '/enrolled');
 
-    const result = await validateCart();
+    const result = await validateCart(true);
 
     if (result?.status === ValidationStatus.INVALID) {
       return { success: false, message: "The selected section conflicts with your current classes." };
