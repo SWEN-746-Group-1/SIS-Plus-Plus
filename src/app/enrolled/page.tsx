@@ -48,9 +48,6 @@ export default async function EnrolledPage() {
       },
       include: {
         enrolled: {
-          where: {
-            status: 'ENROLLED',
-          },
           include: {
             courseSection: {
               include: {
@@ -116,7 +113,11 @@ export default async function EnrolledPage() {
                   </p>
                 </div>
               </div>
-              <SwapButton enrollmentId={enrollment.id} courseId={enrollment.courseSection.course.id} />
+              <SwapButton enrollmentId={enrollment.id}
+              courseId={enrollment.courseSection.course.id}
+              userId={userId!}
+              enrollments={enrollments}
+              />
             </li>
           ))}
         </ul>
