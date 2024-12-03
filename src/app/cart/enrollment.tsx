@@ -2,7 +2,7 @@
 
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma'
-// import { revalidatePath } from 'next/cache'
+import { EnrollmentStatus } from '@prisma/client';
 
 interface Interval {
     start: number;
@@ -33,7 +33,7 @@ function getDay(week: Schedule, day: string) {
     }
 }
 
-export async function validateCart() {
+export async function validateCart(enroll: boolean = false) {
     const session = await auth();
 
     let userId: string | null;
@@ -88,12 +88,15 @@ export async function validateCart() {
     }
 
     const res: ValidationResponse = {
-        status: "",
+        status: "valid",
         notes: []
     }
 
-    cart?.courseSections.map((section) => {
+    const toEnroll = []
+
+    cart?.courseSections.map((section, cartIndex) => {
         section.timeSlot?.daysOfTheWeek.map((day) => {
+            let valid = true;
             getDay(schedule, day)?.map((interval) => {
                 if(section.timeSlot !== null) {
 
@@ -103,7 +106,8 @@ export async function validateCart() {
                         if(res.status !== "invalid") {
                             res.status = "invalid"
                         }
-                        res.notes.push(`Scheduling conflict for ${section.course.fullCode}.${section.section}`)
+                        valid = false;
+                        res.notes.push(`Scheduling conflict for ${section.course.fullCode}.${section.section}`);
                     }
 
                     section.course.prerequisites.map((prereq) => {
@@ -111,13 +115,30 @@ export async function validateCart() {
                             if(res.status !== "invalid") {
                                 res.status = "invalid"
                             }
-                            res.notes.push(`Unmet prerequisite "${prereq.fullCode}" for ${section.course.fullCode}`)
+                            valid = false;
+                            res.notes.push(`Unmet prerequisite "${prereq.fullCode}" for ${section.course.fullCode}`);
                         }
                     })
                 }
             })
+            if(valid && section.timeSlot !== null) {
+                getDay(schedule, day)?.push({start: section.timeSlot.startTime, end: section.timeSlot.endTime})
+
+                if(enroll) {
+                    toEnroll.push({
+                        studentId: userId,
+                        sectionId: section.id,
+                        status: section.classlist.length >= section.capacity ? EnrollmentStatus.WAITLISTED : EnrollmentStatus.ENROLLED,
+                        order: cartIndex
+                    })
+                }
+            }
         })
     })
+
+    if(enroll) {
+        console.log(toEnroll)
+    }
 
     return res;
 }
