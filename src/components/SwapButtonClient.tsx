@@ -41,7 +41,7 @@ type SwapButtonClientProps = {
   availableSections?: CourseSection[];
   userId: string;
   enrollments: Enrollment[];
-  handleSelectSection: (sectionId: string) => Promise<{ success: boolean; message: string }>;
+  handleSelectSection: (sectionId: string, userId: string, enrollments: Enrollment[]) => Promise<{ success: boolean; message: string }>;
   handleDeleteEnrollment: (enrollmentId: string) => Promise<{ success: boolean; message: string }>;
 };
 
@@ -61,7 +61,7 @@ const SwapButtonClient: React.FC<SwapButtonClientProps> = ({
   const [messageType, setMessageType] = useState<'success' | 'error' | null>(null);
 
   const onSelectSection = async (sectionId: string) => {
-    const result = await handleSelectSection(sectionId);
+    const result = await handleSelectSection(sectionId, userId, enrollments);
     setMessage(result.message);
     setMessageType(result.success ? 'success' : 'error');
     setIsMessageModalOpen(true);
