@@ -145,7 +145,10 @@ export async function validateCart(enroll: boolean = false) {
         }
         
         if(valid && section.timeSlot !== null) {
-            section.timeSlot.daysOfTheWeek.map((day) => {schedule = addInterval(schedule, day, {start: section.timeSlot.startTime, end: section.timeSlot.endTime, sectionName: section.course.fullCode+"."+section.section})})
+            section.timeSlot.daysOfTheWeek.map((day) => {
+                if (section.timeSlot !== null)
+                    schedule = addInterval(schedule, day, {start: section.timeSlot.startTime, end: section.timeSlot.endTime, sectionName: section.course.fullCode+"."+section.section})
+            })
             enrollingCourses.add(section.course.id)
             if(enroll) {
                 toEnroll.push({
