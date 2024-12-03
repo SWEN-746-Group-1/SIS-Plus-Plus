@@ -34,7 +34,7 @@ RUN curl -Os https://cli.codecov.io/latest/linux/codecov.SHA256SUM.sig
 RUN gpgv codecov.SHA256SUM.sig codecov.SHA256SUM
 RUN 
 RUN shasum -a 256 -c codecov.SHA256SUM
-RUN sudo chmod +x codecov
+RUN chmod +x codecov
 RUN ./codecov --help
 
 
