@@ -37,8 +37,7 @@ RUN gpgv codecov.SHA256SUM.sig codecov.SHA256SUM
 RUN 
 RUN shasum -a 256 -c codecov.SHA256SUM
 RUN chmod +x codecov
-RUN ./codecov upload-process
-
+RUN ./codecov --codecov-yml-path codecov.yml upload-process
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
