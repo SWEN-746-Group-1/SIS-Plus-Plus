@@ -13,7 +13,7 @@ export function formatTimeSlot(ts: TimeSlot | null): string {
     const days = ts.daysOfTheWeek.join("");
     const startHours = `${Math.round(ts.startTime/60)}`
     const startMinutes = `${String("0"+ts.startTime%60).slice(-2)}`
-    const endHours = `${Math.round(ts.endTime/60)}`
+    const endHours = `${Math.floor(ts.endTime/60)}`
     const endMinutes = `${String("0"+ts.endTime%60).slice(-2)}`
     return `${days} ${startHours}:${startMinutes} - ${endHours}:${endMinutes}`
 }

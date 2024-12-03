@@ -30,8 +30,8 @@ const course = {
             timeSlot: {
                 id: '1',
                 daysOfTheWeek: ['M', 'W', 'F'],
-                startTime: '09:00',
-                endTime: '09:50',
+                startTime: 540,
+                endTime: 590,
                 courseSectionId: '1',
             },
             classlist: [
@@ -85,7 +85,7 @@ test('getSearchCoursesLoggedOut', async () => {
                 {
                     sectionId: '1',
                     sectionName: '001',
-                    sectionTime: '09:00 - 09:50',
+                    sectionTime: 'MWF 9:00 - 9:50',
                     sectionSeats: '1/100 (0 waitlisted)',
                     sectionInstructor: 'Dr. Smith',
                     sectionLocation: 'Online',
@@ -113,7 +113,7 @@ test('getSearchCoursesLoggedIn - In Cart', async () => {
                 {
                     sectionId: '1',
                     sectionName: '001',
-                    sectionTime: '09:00 - 09:50',
+                    sectionTime: 'MWF 9:00 - 9:50',
                     sectionSeats: '1/100 (0 waitlisted)',
                     sectionInstructor: 'Dr. Smith',
                     sectionLocation: 'Online',
@@ -141,7 +141,7 @@ test('getSearchCoursesLoggedIn - Not In Cart', async () => {
               {
                   sectionId: '1',
                   sectionName: '001',
-                  sectionTime: '09:00 - 09:50',
+                  sectionTime: 'MWF 9:00 - 9:50',
                   sectionSeats: '1/100 (0 waitlisted)',
                   sectionInstructor: 'Dr. Smith',
                   sectionLocation: 'Online',
