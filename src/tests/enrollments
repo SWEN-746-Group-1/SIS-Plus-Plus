@@ -1,20 +1,18 @@
 import { expect, test, vi, beforeEach, afterEach } from 'vitest';
 import { prisma as prismaMock } from './mocks/prisma';
-import EnrolledPage from '@/app/enrolled/page';
 import { render, screen, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
 
 vi.mock('@/lib/auth', () => ({
   auth: vi.fn(),
 }));
 
-vi.mock('@/lib/prisma', () => ({
-  prisma: {
-    user: {
-      findUnique: vi.fn(),
-    },
-  },
-}));
+vi.mock('@/lib/prisma', async () => {
+  const actual = await vi.importActual('./mocks/prisma');
+  return {
+      ...actual,
+  };
+});
+
 
 beforeEach(() => {
   vi.clearAllMocks();
