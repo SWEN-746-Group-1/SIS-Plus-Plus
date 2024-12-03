@@ -1,5 +1,11 @@
 import { TimeSlot, Enrolled, EnrollmentStatus } from "@prisma/client";
 
+export enum ValidationStatus {
+    VALID,
+    INVALID,
+    ENROLLED
+}
+
 export function formatTimeSlot(ts: TimeSlot | null): string {
     if(ts === null) {
         return "TBD"

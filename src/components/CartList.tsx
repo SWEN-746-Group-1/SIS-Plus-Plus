@@ -40,7 +40,7 @@ export function CartList(props: CartListProps) {
     return(
         <div className="pl-10">
             <Dialog open={showDetails} onOpenChange={setShowDetails}>
-                <Table className="w-full">
+                <Table>
                     <TableHeader>
                         <TableRow>
                             <TableHead>Section</TableHead>

@@ -1,12 +1,16 @@
 'use server';
 
-import { auth } from '@/lib/auth';
+import { getCart } from './cartData';
+import { auth, signIn } from '@/lib/auth';
 import { prisma } from '@/lib/prisma'
-import { EnrollmentStatus } from '@prisma/client';
+import { Enrolled, EnrollmentStatus } from '@prisma/client';
+import { ValidationStatus } from '@/lib/sisUtils';
+import { revalidatePath } from 'next/cache';
 
 interface Interval {
     start: number;
     end: number;
+    sectionName: string;
 }
 
 interface Schedule {
@@ -17,13 +21,20 @@ interface Schedule {
     f: Interval[];
 }
 
+interface PreEnrolled {
+    studentId: string;
+    sectionId: string;
+    status: EnrollmentStatus;
+    order: number;
+}
+
 export interface ValidationResponse {
-    status: string;
-    notes: string[];
+    status: ValidationStatus;
+    notes: Set<string>;
 }
 
 function getDay(week: Schedule, day: string) {
-    switch (day) {
+    switch (day.toLowerCase()) {
         case "m": return week.m;
         case "t": return week.t;
         case "w": return week.w;
@@ -33,53 +44,53 @@ function getDay(week: Schedule, day: string) {
     }
 }
 
+function addInterval(week: Schedule, day: string, interval: Interval) {
+    switch (day.toLowerCase()) {
+        case "m": 
+            week.m.push(interval);
+            return week;
+        case "t": 
+            week.t.push(interval);
+            return week;
+        case "w": 
+            week.w.push(interval);
+            return week;
+        case "r": 
+            week.r.push(interval);
+            return week;
+        case "f": 
+            week.f.push(interval);
+            return week;
+        default: return week;
+    }
+}
+
 export async function validateCart(enroll: boolean = false) {
+    
     const session = await auth();
 
-    let userId: string | null;
+    console.log("authenticated");
+
     if (!session || !session.user || !session.user.id) {
-        userId = null;
-        throw new Error('You must be logged in to validate a cart')
-    } else {
-        userId = session.user.id;
+        await signIn();
+        return;
     }
 
-    let cart;
-    if (!userId) {
-        cart = null;
-        throw new Error('No user to get cart for')
-    } else {
-        cart = await prisma.cart.findFirst({
-            where: {
-                userId,
-            },
-            include: {
-                courseSections: {
-                    include: {
-                        course: {
-                            include: {
-                                prerequisites: true,
-                            }
-                        },
-                        timeSlot: true,
-                        classlist: true,
-                    }
-                }
-            }
-        })
-    }
+    const userId = session.user.id;
+    const cart = await getCart(userId);
 
     const id = userId;
-    const fullUser = await prisma.user.findFirst({
+    const userCurrent = await prisma.user.findFirst({
         where: {
             id
         },
         include: {
-            completedCourses: true
+            completedCourses: true,
+            enrolled: true
         }
     })
 
-    const schedule: Schedule = {
+    let schedule: Schedule = {
         m: [],
         t: [],
         w: [],
@@ -88,57 +99,113 @@ export async function validateCart(enroll: boolean = false) {
     }
 
     const res: ValidationResponse = {
-        status: "valid",
-        notes: []
+        status: ValidationStatus.VALID,
+        notes: new Set()
     }
 
-    const toEnroll = []
+    const enrollingCourses: Set<string> = new Set()
+    const toEnroll: PreEnrolled[] = []
 
-    cart?.courseSections.map((section, cartIndex) => {
-        section.timeSlot?.daysOfTheWeek.map((day) => {
-            let valid = true;
-            getDay(schedule, day)?.map((interval) => {
+    // Check possible sources of cart problems
+    cart?.cartItems.map((section) => {
+        let valid = true;
+
+        // Duplicate courses
+        if(enrollingCourses.has(section.course.id)) {
+            valid = false
+            res.status = ValidationStatus.INVALID
+            res.notes.add(`Multiple sections of ${section.course.fullCode}`)
+        } else {
+            // Prerequisites unmet
+            section.course.prerequisites.map((prereq) => {
+                if(!userCurrent?.completedCourses.some((completed) => {return(completed.code == prereq.code)})) {
+                    res.status = ValidationStatus.INVALID
+                    valid = false;
+                    res.notes.add(`Unmet prerequisite "${prereq.fullCode}" for ${section.course.fullCode}`);
+                }
+            })
+        }
+
+        // Schedule collision
+        if (section.timeSlot?.daysOfTheWeek.some((day) => {
+            return(getDay(schedule, day)?.some((interval) => {
                 if(section.timeSlot !== null) {
-
                     if(section.timeSlot?.startTime < interval.end && 
                         section.timeSlot.endTime > interval.start
                     ) {
-                        if(res.status !== "invalid") {
-                            res.status = "invalid"
-                        }
-                        valid = false;
-                        res.notes.push(`Scheduling conflict for ${section.course.fullCode}.${section.section}`);
+                        res.status = ValidationStatus.INVALID
+                        res.notes.add(`${section.course.fullCode}.${section.section} conflicts with ${interval.sectionName}`);
+                        return true;
                     }
-
-                    section.course.prerequisites.map((prereq) => {
-                        if(!fullUser?.completedCourses.some((completed) => {return(completed.code == prereq.code)})) {
-                            if(res.status !== "invalid") {
-                                res.status = "invalid"
-                            }
-                            valid = false;
-                            res.notes.push(`Unmet prerequisite "${prereq.fullCode}" for ${section.course.fullCode}`);
-                        }
-                    })
                 }
-            })
-            if(valid && section.timeSlot !== null) {
-                getDay(schedule, day)?.push({start: section.timeSlot.startTime, end: section.timeSlot.endTime})
-
-                if(enroll) {
-                    toEnroll.push({
-                        studentId: userId,
-                        sectionId: section.id,
-                        status: section.classlist.length >= section.capacity ? EnrollmentStatus.WAITLISTED : EnrollmentStatus.ENROLLED,
-                        order: cartIndex
-                    })
-                }
+                return false;
+            }))
+        })) {
+            valid = false;
+        }
+        
+        if(valid && section.timeSlot !== null) {
+            section.timeSlot.daysOfTheWeek.map((day) => {schedule = addInterval(schedule, day, {start: section.timeSlot.startTime, end: section.timeSlot.endTime, sectionName: section.course.fullCode+"."+section.section})})
+            enrollingCourses.add(section.course.id)
+            if(enroll) {
+                toEnroll.push({
+                    studentId: userId,
+                    sectionId: section.id,
+                    status: section.classlist.length >= section.capacity ? EnrollmentStatus.WAITLISTED : EnrollmentStatus.ENROLLED,
+                    order: section.classlist.length
+                })
             }
-        })
+        }
     })
 
-    if(enroll) {
-        console.log(toEnroll)
+    console.log(schedule)
+
+    console.log(res);
+
+    if (enroll) {
+        if (res.status === ValidationStatus.VALID) {
+
+            // transfer current enrollments to completed
+            cart.completedCourses.map(async (course) => {
+                await prisma.user.update({
+                    where: {
+                        id: userId
+                    },
+                    data: {
+                        completedCourses: {
+                            connect: {
+                                id: course.id
+                            }
+                        }
+                    }
+                })
+            })
+
+            const newEnrollments = await prisma.enrolled.createManyAndReturn({
+                data: toEnroll.map((enrollmentData) => ({
+                    status: enrollmentData.status,
+                    studentId: enrollmentData.studentId,
+                    sectionId: enrollmentData.sectionId,
+                    order: enrollmentData.order,
+                }))
+            })
+            
+            await prisma.cart.update({
+                where: {
+                    userId
+                },
+                data: {
+                    courseSections: {
+                        set: []
+                    }
+                }
+            })
+
+            res.status = ValidationStatus.ENROLLED;
+        }
     }
+
+    revalidatePath("/cart");
 
     return res;
 }
