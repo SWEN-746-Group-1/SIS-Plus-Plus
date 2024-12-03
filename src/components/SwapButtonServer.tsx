@@ -3,8 +3,8 @@ import SwapButtonClient from './SwapButtonClient';
 import React from 'react';
 
 type TimeSlot = {
-  startTime: string;
-  endTime: string;
+  startTime: number;
+  endTime: number;
   daysOfTheWeek: string[];
 };
 

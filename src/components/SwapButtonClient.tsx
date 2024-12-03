@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 
 type TimeSlot = {
-  startTime: string;
-  endTime: string;
+  startTime: number;
+  endTime: number;
   daysOfTheWeek: string[];
 };
 
