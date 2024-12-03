@@ -57,6 +57,5 @@ export async function removeFromCart(sectionId: string, path: string) {
         },
     });
 
-    revalidatePath('/search');
-    revalidatePath('/cart');
+    revalidatePath(path);
 }

@@ -33,12 +33,9 @@ export interface CartListProps {
 
 export function CartList(props: CartListProps) {
     const [showDetails, setShowDetails] = useState(false);
-    
-    let sectionDetails;
 
-    function setSectionDetails(value: SectionDisplayInfo) {
-        sectionDetails = value;
-    }
+    const [sectionDetails, setSectionDetails] =
+        useState<SectionDisplayInfo | null>(null);
 
     return(
         <div className="pl-10">
