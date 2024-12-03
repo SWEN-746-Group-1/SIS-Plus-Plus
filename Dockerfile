@@ -23,6 +23,8 @@ COPY . .
 RUN npm run test
 RUN npx vitest run --coverage
 
+RUN ls
+
 # download Codecov CLI
 RUN curl -Os https://cli.codecov.io/latest/linux/codecov
 RUN 
@@ -35,7 +37,7 @@ RUN gpgv codecov.SHA256SUM.sig codecov.SHA256SUM
 RUN 
 RUN shasum -a 256 -c codecov.SHA256SUM
 RUN chmod +x codecov
-RUN ./codecov --help
+RUN ./codecov upload-process
 
 
 # Next.js collects completely anonymous telemetry data about general usage.
