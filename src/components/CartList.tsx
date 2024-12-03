@@ -1,6 +1,7 @@
 'use client';
 
 import { formatTimeSlot, formatSeats } from "@/lib/sisUtils";
+import { CourseSection, Course, TimeSlot, Enrolled } from "@prisma/client";
 
 import {
     Table,
@@ -32,11 +33,11 @@ export interface CartListProps {
 
 export function CartList(props: CartListProps) {
     const [showDetails, setShowDetails] = useState(false);
-
-    let details;
+    
+    let sectionDetails;
 
     function setSectionDetails(value: SectionDisplayInfo) {
-        details = value;
+        sectionDetails = value;
     }
 
     return(
@@ -64,9 +65,7 @@ export function CartList(props: CartListProps) {
                                                 section: section.section,
                                                 title: section.course?.title || '',
                                                 credits: section.course?.credits.toString() || '',
-                                                daysOfTheWeek: section.timeSlot?.daysOfTheWeek.join(' ') || '',
-                                                startTime: section.timeSlot?.startTime || '',
-                                                endTime: section.timeSlot?.endTime || '',
+                                                sectionTime: formatTimeSlot(section.timeSlot),
                                                 description: section.course?.description || '',
                                                 location: section.location,
                                                 instructor: section.instructor,
@@ -101,14 +100,10 @@ export function CartList(props: CartListProps) {
                     </TableBody>
                 </Table>
 
-<<<<<<< HEAD
-                <SectionDetailDialog sectionInfo={details}/>
-=======
                 {sectionDetails && (
                     <SectionDetailDialog {...sectionDetails} />
                 )}
 
->>>>>>> main
             </Dialog>
         </div>
     );
