@@ -14,8 +14,10 @@ export function CartView(cart: CartListProps) {
 
     async function tryValidate(enrollMode: boolean = false) {
         const newResult = await validateCart(enrollMode);
-        setResults(newResult);
-        setShowResults(true);
+        if (newResult !== undefined) {
+            setResults(newResult);
+            setShowResults(true);
+        }
     }
 
     return (
