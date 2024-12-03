@@ -118,7 +118,7 @@ export async function validateCart(enroll: boolean = false) {
         } else {
             // Prerequisites unmet
             section.course.prerequisites.map((prereq) => {
-                if(!userCurrent?.completedCourses.some((completed) => {return(completed.code == prereq.code)})) {
+                if(!userCurrent?.completedCourses.some((completed) => {return(completed.id == prereq.id)})) {
                     res.status = ValidationStatus.INVALID
                     valid = false;
                     res.notes.add(`Unmet prerequisite "${prereq.fullCode}" for ${section.course.fullCode}`);
