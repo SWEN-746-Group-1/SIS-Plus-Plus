@@ -41,6 +41,7 @@ const SwapButtonClient: React.FC<SwapButtonClientProps> = ({
   const [isSwapSectionModalOpen, setIsSwapSectionModalOpen] = useState(false);
 
   const handleSelectSection = (sectionId: string) => {
+    console.log(`Selected section: ${sectionId}`);
     setIsSwapSectionModalOpen(false);
   };
 
