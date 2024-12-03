@@ -72,7 +72,7 @@ const SwapButtonClient: React.FC<SwapButtonClientProps> = ({
 
   const onDeleteEnrollment = async () => {
     setIsDeleteConfirmationOpen(false)
-    const result = await handleDeleteEnrollment(courseId);
+    const result = await handleDeleteEnrollment(enrollmentId);
     setMessage(result.message);
     setMessageType(result.success ? 'success' : 'error');
     setIsMessageModalOpen(true);

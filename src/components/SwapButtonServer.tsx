@@ -5,6 +5,7 @@ import { addToCart, removeFromCart } from '@/app/cart/addToCart';
 import { getCart } from '@/app/cart/cartData';
 import SwapButtonClient from './SwapButtonClient';
 import React from 'react';
+import { revalidatePath } from 'next/cache';
 
 type TimeSlot = {
   startTime: number;
@@ -109,14 +110,11 @@ async function handleDeleteEnrollment(enrollmentId: string, userId: string) {
       return { success: false, message: "Enrollment not found." };
     }
 
-    if (enrollment.user.id !== userId) {
-      return { success: false, message: "You cannot delete an enrollment that does not belong to you." };
-    }
-
     await prisma.enrolled.delete({
       where: { id: enrollmentId },
     });
 
+    revalidatePath('/enrolled');
     return { success: true, message: "Enrollment deleted successfully." };
   } catch (error) {
     console.error("Failed to delete enrollment", error);
