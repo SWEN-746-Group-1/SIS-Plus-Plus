@@ -71,7 +71,7 @@ async function handleSelectSection(sectionId: string, userId: string, enrollment
 
     await addToCart(sectionId, '/enrolled');
 
-    const result = await validateCart(true);
+    const result = await validateCart();
 
     if (result?.status === ValidationStatus.INVALID) {
       return { success: false, message: "The selected section conflicts with your current classes." };
@@ -89,6 +89,41 @@ async function handleSelectSection(sectionId: string, userId: string, enrollment
     return { success: false, message: "An error occurred while updating your sections." };
   }
 }
+
+async function handleDeleteEnrollment(enrollmentId: string, userId: string) {
+  "use server";
+  try {
+    const enrollment = await prisma.enrolled.findUnique({
+      where: { id: enrollmentId },
+      include: {
+        courseSection: {
+          include: {
+            course: true,
+          },
+        },
+        user: true,
+      },
+    });
+
+    if (!enrollment) {
+      return { success: false, message: "Enrollment not found." };
+    }
+
+    if (enrollment.user.id !== userId) {
+      return { success: false, message: "You cannot delete an enrollment that does not belong to you." };
+    }
+
+    await prisma.enrolled.delete({
+      where: { id: enrollmentId },
+    });
+
+    return { success: true, message: "Enrollment deleted successfully." };
+  } catch (error) {
+    console.error("Failed to delete enrollment", error);
+    return { success: false, message: "An error occurred while deleting the enrollment." };
+  }
+}
+
 
 
 async function getCourseSections(courseId: string): Promise<CourseSection[]> {
@@ -135,6 +170,7 @@ export default async function SwapButtonServer({
       userId={userId}
       enrollments={enrollments}
       handleSelectSection={handleSelectSection}
+      handleDeleteEnrollment={handleDeleteEnrollment}
     />
   );
 }
