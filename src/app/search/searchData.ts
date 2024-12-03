@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { formatTimeSlot } from '@/lib/sisUtils';
 
 const getCourses = async (search: string, userId: string | null = null) => {
     let fullSearch = search;
@@ -84,7 +85,7 @@ const getCourses = async (search: string, userId: string | null = null) => {
             sectionTime:
                 (section.timeSlot?.endTime &&
                     section.timeSlot?.startTime &&
-                    `${section.timeSlot?.startTime} - ${section.timeSlot?.endTime}`) ||
+                    formatTimeSlot(section.timeSlot)) ||
                 'TBA',
             sectionSeats: `${
                 section.classlist.filter(

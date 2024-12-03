@@ -39,8 +39,8 @@ const cartDB = {
             timeSlot: {
                 id: '1',
                 daysOfTheWeek: ['M', 'W', 'F'],
-                startTime: '09:00',
-                endTime: '09:50',
+                startTime: 540,
+                endTime: 590,
                 courseSectionId: '1',
             },
             classList: [

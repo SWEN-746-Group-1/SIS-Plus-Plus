@@ -1,12 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/lib/auth';
 import SwapButton from '@/components/SwapButtonServer';
-
-type TimeSlot = {
-  startTime: string;
-  endTime: string;
-  daysOfTheWeek: string[];
-};
+import { TimeSlot } from '@prisma/client';
+import { formatTimeSlot } from '@/lib/sisUtils';
 
 type Course = {
   id: string;
@@ -43,11 +39,10 @@ export default async function EnrolledPage() {
     userId = session.user.id;
   }
 
-  let enrolledUser: { enrolled: Enrollment[] } | null = null;
   let enrollments: Enrollment[] = [];
 
   if (userId) {
-    enrolledUser = await prisma.user.findUnique({
+    const enrolledUser = await prisma.user.findUnique({
       where: {
         id: userId,
       },
@@ -101,8 +96,7 @@ export default async function EnrolledPage() {
                   </p>
                   <p>
                     <strong>Time:</strong>{' '}
-                    {enrollment.courseSection.timeSlot?.startTime} -{' '}
-                    {enrollment.courseSection.timeSlot?.endTime}
+                    {formatTimeSlot(enrollment.courseSection.timeSlot)}
                   </p>
                   <p>
                     <strong>Days:</strong>{' '}

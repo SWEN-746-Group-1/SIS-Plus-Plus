@@ -1,6 +1,7 @@
 'use client';
 
-import { TimeSlot, Enrolled, EnrollmentStatus, CourseSection, Course } from '@prisma/client';
+import { formatTimeSlot, formatSeats } from "@/lib/sisUtils";
+import { CourseSection, Course, TimeSlot, Enrolled } from "@prisma/client";
 
 import {
     Table,
@@ -36,27 +37,10 @@ export function CartList(props: CartListProps) {
     const [sectionDetails, setSectionDetails] =
         useState<SectionDisplayInfo | null>(null);
 
-    function formatTimeSlot(timeSlot: TimeSlot | null) {
-        if (timeSlot === null) {
-            return 'TBD';
-        }
-        return `${timeSlot.daysOfTheWeek.join('')} ${timeSlot.startTime}-${
-            timeSlot.endTime
-        }`;
-    }
-
-    function formatSeats(classlist: Enrolled[], capacity: number) {
-        const numEnrolled = classlist.filter((enrollment) => {
-            return enrollment.status === EnrollmentStatus.ENROLLED;
-        }).length;
-        const numWaitlisted = classlist.length - numEnrolled;
-        return `${numEnrolled}/${capacity} (+${numWaitlisted})`;
-    }
-
-    return (
+    return(
         <div className="pl-10">
             <Dialog open={showDetails} onOpenChange={setShowDetails}>
-                <Table className="w-3/4">
+                <Table>
                     <TableHeader>
                         <TableRow>
                             <TableHead>Section</TableHead>
@@ -78,9 +62,7 @@ export function CartList(props: CartListProps) {
                                                 section: section.section,
                                                 title: section.course?.title || '',
                                                 credits: section.course?.credits.toString() || '',
-                                                daysOfTheWeek: section.timeSlot?.daysOfTheWeek.join(' ') || '',
-                                                startTime: section.timeSlot?.startTime || '',
-                                                endTime: section.timeSlot?.endTime || '',
+                                                sectionTime: formatTimeSlot(section.timeSlot),
                                                 description: section.course?.description || '',
                                                 location: section.location,
                                                 instructor: section.instructor,

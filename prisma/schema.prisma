@@ -141,8 +141,8 @@ model CourseSection {
 model TimeSlot {
   id            String @id @default(cuid())
   daysOfTheWeek String[]
-  startTime     String
-  endTime       String
+  startTime     Int
+  endTime       Int
 
   courseSectionId String @unique
   

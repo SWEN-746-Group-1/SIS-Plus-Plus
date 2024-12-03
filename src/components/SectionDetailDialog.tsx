@@ -21,9 +21,7 @@ export interface SectionDisplayInfo {
     section: string;
     title: string;
     credits: string;
-    daysOfTheWeek: string;
-    startTime: string;
-    endTime: string;
+    sectionTime: string;
     description: string;
     location: string;
     instructor: string;
@@ -38,9 +36,7 @@ export function SectionDetailDialog({
     section,
     title,
     credits,
-    daysOfTheWeek,
-    startTime,
-    endTime,
+    sectionTime,
     description,
     location,
     instructor,
@@ -64,9 +60,7 @@ export function SectionDetailDialog({
                     </div>
                     <div className="space-y-2">
                         <DialogDescription>
-                            {daysOfTheWeek} {startTime}
-                            {' - '}
-                            {endTime}
+                            {sectionTime}
                         </DialogDescription>
                     </div>
                 </div>

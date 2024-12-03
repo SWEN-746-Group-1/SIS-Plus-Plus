@@ -4,6 +4,7 @@ import { removeFromCart } from "@/app/cart/addToCart";
 import { Button } from "./ui/button";
 import { TableCell, TableRow } from "./ui/table";
 import { Trash } from "lucide-react";
+import { MouseEventHandler } from "react";
 // import { DialogTrigger } from "./ui/dialog";
 
 export interface CartItemProps {
@@ -12,7 +13,7 @@ export interface CartItemProps {
     sectionTime: string;
     sectionSeats: string;
     sectionInstructor: string;
-    onClick: () => void;
+    onClick: MouseEventHandler
     // credits: number;
 }
 

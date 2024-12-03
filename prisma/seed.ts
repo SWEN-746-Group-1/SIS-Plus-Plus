@@ -163,10 +163,14 @@ async function main() {
                                 location: `Room ${100 + i}`,
                                 capacity: 30 + i * 10,
                                 timeSlot: {
-                                    create: {
+                                    create: i % 2 == 0 ? {
                                         daysOfTheWeek: ['M', 'W', 'F'],
-                                        startTime: (8 + i < 10) ? `0${8 + i}:00` : `${8 + i}:00`, // Dynamic start times
-                                        endTime: (8 + i < 10) ? `0${8 + i}:50` : `${8 + i}:50`, // Dynamic end times
+                                        startTime: (60*i)+480, // Dynamic start times
+                                        endTime: (60*i)+530, // Dynamic end times
+                                    } : {
+                                        daysOfTheWeek: ['T', 'R'],
+                                        startTime: (90*i)+480, // Dynamic start times
+                                        endTime: (90*i)+555, // Dynamic end times
                                     },
                                 },
                             })),
