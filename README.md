@@ -1,5 +1,9 @@
 # SIS++ Class Selection System
 
+[![codecov](https://codecov.io/github/SWEN-746-Group-1/SIS-Plus-Plus/graph/badge.svg?token=MA1PYH0M67)](https://codecov.io/github/SWEN-746-Group-1/SIS-Plus-Plus)
+
+Design Docs are in [docs/README.md](docs/README.md)
+
 ## Team Information
 
 -   Team name: 0++
