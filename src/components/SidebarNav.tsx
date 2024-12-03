@@ -56,6 +56,15 @@ export default function SidebarNav() {
                       </SidebarMenuSubButton>
                     </SidebarMenuSubItem>
                 </SidebarMenuSub>
+                <SidebarMenuSub>
+                    <SidebarMenuSubItem>
+                      <SidebarMenuSubButton asChild>
+                        <Link href="/enrolled">
+                          <span>Enrollments</span>
+                        </Link>
+                      </SidebarMenuSubButton>
+                    </SidebarMenuSubItem>
+                </SidebarMenuSub>
               </CollapsibleContent>
             </SidebarMenuItem>
           </Collapsible>
