@@ -3,7 +3,7 @@
 import { getCart } from './cartData';
 import { auth, signIn } from '@/lib/auth';
 import { prisma } from '@/lib/prisma'
-import { Enrolled, EnrollmentStatus } from '@prisma/client';
+import { EnrollmentStatus } from '@prisma/client';
 import { ValidationStatus } from '@/lib/sisUtils';
 import { revalidatePath } from 'next/cache';
 
@@ -181,7 +181,7 @@ export async function validateCart(enroll: boolean = false) {
                 })
             })
 
-            const newEnrollments = await prisma.enrolled.createManyAndReturn({
+            await prisma.enrolled.createMany({
                 data: toEnroll.map((enrollmentData) => ({
                     status: enrollmentData.status,
                     studentId: enrollmentData.studentId,
