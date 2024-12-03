@@ -1,5 +1,4 @@
 import { auth, signIn } from '@/lib/auth';
-import getAccount from './accountData';
 import {
     Table,
     TableBody,
@@ -8,6 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import getCourses from './coursesData';
 
 export default async function Page() {
     const session = await auth();
@@ -17,8 +17,7 @@ export default async function Page() {
         return;
     }
 
-    const user = await getAccount(session.user.id);
-
+    const courses = await getCourses(session.user.id);
     return (
         <div className="flex w-full items-center mt-5 flex-col gap-5">
             <h1 className="text-3xl font-semibold">Course History</h1>
@@ -26,56 +25,19 @@ export default async function Page() {
             <Table>
                 <TableHeader>
                     <TableRow>
-                        <TableHead className="w-[100px]">Section</TableHead>
-                        <TableHead>Time</TableHead>
-                        <TableHead>Capacity</TableHead>
-                        <TableHead>Instructor</TableHead>
-                        <TableHead>Location</TableHead>
-                        <TableHead className="text-right"></TableHead>
+                        <TableHead className="w-[100px]">Course</TableHead>
+                        <TableHead className="text-right">Status</TableHead>
                     </TableRow>
                 </TableHeader>
 
                 <TableBody>
-                    <TableRow>
-                        <TableCell className="font-medium">
-                            {props.sectionName}
-                        </TableCell>
-                        <TableCell>{props.sectionTime}</TableCell>
-                        <TableCell>{props.sectionSeats}</TableCell>
-                        <TableCell>{props.sectionInstructor}</TableCell>
-                        <TableCell>{props.sectionLocation}</TableCell>
-                        {}
-                        {props.inCart !== null ? (
-                            props.inCart ? (
-                                <TableCell className="text-right">
-                                    <Button
-                                        variant={'outline'}
-                                        onClick={() =>
-                                            removeFromCart(
-                                                props.sectionId,
-                                                '/search'
-                                            )
-                                        }
-                                    >
-                                        <Trash />
-                                    </Button>
-                                </TableCell>
-                            ) : (
-                                <TableCell className="text-right">
-                                    <Button
-                                        onClick={() =>
-                                            addToCart(
-                                                props.sectionId,
-                                                '/search'
-                                            )
-                                        }
-                                    >
-                                        <ShoppingCart />
-                                    </Button>
-                                </TableCell>
-                            )
-                        ) : null}
-                    </TableRow>
+
+                    {courses.map((course, i) => (
+                        <TableRow key={i}>
+                            <TableCell>{course.code}</TableCell>
+                            <TableCell className="text-right">{course.status}</TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
         </div>
