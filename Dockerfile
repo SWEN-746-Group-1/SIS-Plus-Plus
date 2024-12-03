@@ -21,6 +21,24 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 RUN npm run test
+RUN npx vitest run --coverage
+
+RUN ls
+
+# download Codecov CLI
+RUN curl -Os https://cli.codecov.io/latest/linux/codecov
+RUN 
+RUN # integrity check
+RUN curl https://keybase.io/codecovsecurity/pgp_keys.asc | gpg --no-default-keyring --keyring trustedkeys.gpg --import # One-time step  
+RUN curl -Os https://cli.codecov.io/latest/linux/codecov
+RUN curl -Os https://cli.codecov.io/latest/linux/codecov.SHA256SUM
+RUN curl -Os https://cli.codecov.io/latest/linux/codecov.SHA256SUM.sig
+RUN gpgv codecov.SHA256SUM.sig codecov.SHA256SUM
+RUN 
+RUN shasum -a 256 -c codecov.SHA256SUM
+RUN chmod +x codecov
+RUN ./codecov upload-process
+
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
