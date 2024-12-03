@@ -2,11 +2,10 @@
 
 import {
     BadgeCheck,
-    Bell,
     ChevronsUpDown,
-    CreditCard,
     LogIn,
     LogOut,
+    NotepadText,
 } from 'lucide-react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -26,6 +25,7 @@ import {
     useSidebar,
 } from '@/components/ui/sidebar';
 import { signIn, signOut, useSession } from 'next-auth/react';
+import Link from 'next/link';
 
 const defaults = {
     name: 'Not Signed In',
@@ -98,21 +98,25 @@ export default function NavUser() {
                             </div>
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuGroup>
-                            <DropdownMenuItem>
-                                <BadgeCheck />
-                                Account
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <CreditCard />
-                                Billing
-                            </DropdownMenuItem>
-                            <DropdownMenuItem>
-                                <Bell />
-                                Notifications
-                            </DropdownMenuItem>
-                        </DropdownMenuGroup>
-                        <DropdownMenuSeparator />
+                        {session ? (
+                            <>
+                                <DropdownMenuGroup>
+                                    <DropdownMenuItem asChild>
+                                        <Link href="/account">
+                                            <BadgeCheck />
+                                            Account
+                                        </Link>
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem asChild>
+                                        <Link href="/courses">
+                                            <NotepadText />
+                                            Course History
+                                        </Link>
+                                    </DropdownMenuItem>
+                                </DropdownMenuGroup>
+                                <DropdownMenuSeparator />
+                            </>
+                        ): null}
                         {session ? (
                             <DropdownMenuItem onClick={() => signOut()}>
                                 <LogOut />
