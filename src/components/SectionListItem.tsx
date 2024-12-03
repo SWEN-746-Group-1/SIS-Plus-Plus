@@ -27,9 +27,9 @@ export function SectionListItem(props: SectionListItemProps) {
                 
             }
             {props.inCart !== null ? props.inCart ? (
-                <TableCell className="text-right"><Button variant={"outline"} onClick={() => removeFromCart(props.sectionId)}><Trash /></Button></TableCell>
+                <TableCell className="text-right"><Button variant={"outline"} onClick={() => removeFromCart(props.sectionId, '/search')}><Trash /></Button></TableCell>
             ) : (
-                <TableCell className="text-right"><Button onClick={() => addToCart(props.sectionId)}><ShoppingCart /></Button></TableCell>
+                <TableCell className="text-right"><Button onClick={() => addToCart(props.sectionId, '/search')}><ShoppingCart /></Button></TableCell>
             ) : null}
           </TableRow>
     )
