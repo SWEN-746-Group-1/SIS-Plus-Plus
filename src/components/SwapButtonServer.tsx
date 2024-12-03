@@ -29,9 +29,17 @@ type CourseSection = {
   timeSlot: TimeSlot | null;
 };
 
+type Enrollment = {
+  id: string;
+  status: 'ENROLLED' | 'WAITLISTED';
+  courseSection: CourseSection;
+};
+
 type SwapButtonServerProps = {
   enrollmentId: string;
   courseId: string;
+  userId: string;
+  enrollments: Enrollment[];
 };
 
 async function getCourseSections(courseId: string): Promise<CourseSection[]> {
@@ -65,6 +73,8 @@ async function getCourseSections(courseId: string): Promise<CourseSection[]> {
 export default async function SwapButtonServer({
     enrollmentId,
     courseId,
+    userId,
+    enrollments,
   }: SwapButtonServerProps) {
   
     const availableSections = await getCourseSections(courseId);
@@ -74,6 +84,8 @@ export default async function SwapButtonServer({
         enrollmentId={enrollmentId}
         courseId={courseId}
         availableSections={availableSections}
+        userId={userId}
+        enrollments={enrollments}
       />
     );
   }

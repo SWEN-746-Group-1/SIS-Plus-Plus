@@ -1,6 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
+import { getCart } from '@/app/cart/cartData';
+import { addToCart } from '@/app/cart/addToCart';
+import { removeFromCart } from '@/app/cart/addToCart';
+import { validateCart, ValidationResponse } from '@/app/cart/enrollment';
+import { ValidationStatus } from '@/lib/sisUtils';
 
 type TimeSlot = {
   startTime: number;
@@ -29,19 +34,63 @@ type CourseSection = {
   timeSlot: TimeSlot | null;
 };
 
+type Enrollment = {
+  id: string;
+  status: 'ENROLLED' | 'WAITLISTED';
+  courseSection: CourseSection;
+};
+
 type SwapButtonClientProps = {
   enrollmentId: string;
   courseId: string;
   availableSections?: CourseSection[];
+  userId: string;
+  enrollments: Enrollment[];
 };
 
 const SwapButtonClient: React.FC<SwapButtonClientProps> = ({
   availableSections = [],
+  userId,
+  enrollments
 }) => {
   const [isSwapSectionModalOpen, setIsSwapSectionModalOpen] = useState(false);
 
-  const handleSelectSection = (sectionId: string) => {
-    console.log(`Selected section: ${sectionId}`);
+  const handleSelectSection = async (sectionId: string) => {
+    try {
+      const cart = await getCart(userId);
+      const oldCartSections = cart.cartItems.flatMap((item) =>
+        item.classlist.map((classItem) => classItem.sectionId)
+      );
+      const enrolledSections = enrollments.map((enrollment) =>
+        enrollment.courseSection.id
+      );
+
+      for (const oldId of oldCartSections) {
+        removeFromCart(oldId, '/enrolled');
+      }
+
+      for (const section of enrolledSections) {
+        addToCart(section, '/enrolled');
+      }
+      addToCart(sectionId, '/enrolled')
+
+      const result = await validateCart(true);
+      if (result?.status === ValidationStatus.INVALID) {
+        // indicate invalid schedule
+        for (const section of enrolledSections) {
+          removeFromCart(section, '/enrolled');
+        }
+      } else {
+        // indicate successful enrollment
+      }
+      
+      for (const oldId of oldCartSections) {
+        addToCart(oldId, '/enrolled');
+      }
+    }
+    catch {
+      console.log("Failed to update sections")
+    }
     setIsSwapSectionModalOpen(false);
   };
 
