@@ -1,0 +1,9 @@
+# Ignore untestables
+ignore:
+  - "docs/*"
+  - "prisma/*"
+  - "public/*"
+  - "src/components/ui/*"
+  - "src/components/hooks/*"
+  - "src/components/lib/*"
+  - "src/components/middleware/*"
