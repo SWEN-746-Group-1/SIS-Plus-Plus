@@ -56,14 +56,19 @@ const getCourses = async (search: string, userId: string | null = null) => {
     if (!userId) {
         cart = null;
     } else {
-        cart = await prisma.cart.findFirst({
+
+        cart = await prisma.cart.upsert({
             where: {
+                userId,
+            },
+            update: {},
+            create: {
                 userId,
             },
             include: {
                 courseSections: true,
-            },
-        });
+            }
+        })
     }
 
     return courses.map((course) => ({

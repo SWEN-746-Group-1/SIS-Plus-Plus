@@ -4,7 +4,7 @@ import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 
-export async function addToCart(sectionId: string) {
+export async function addToCart(sectionId: string, path: string) {
     const session = await auth();
 
     if (!session || !session.user || !session.user.id) {
@@ -33,11 +33,12 @@ export async function addToCart(sectionId: string) {
         },
     });
 
-    revalidatePath('/search');
+    revalidatePath(path);
 }
 
-export async function removeFromCart(sectionId: string) {
+export async function removeFromCart(sectionId: string, path: string) {
     const session = await auth();
+
 
     if (!session || !session.user || !session.user.id) {
         throw new Error('You must be logged in to remove from cart');

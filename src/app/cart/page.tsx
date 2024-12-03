@@ -1,7 +1,7 @@
-import { prisma } from '@/lib/prisma';
-import { auth } from '@/lib/auth';
 import { CartList } from '@/components/CartList';
 import CartControls from '@/components/CartControls';
+import { auth, signIn } from '@/lib/auth';
+import { getCart } from './cartData';
 // import { Dialog } from '@/components/ui/dialog';
 // import SectionDetailDialog from '@/components/SectionDetailDialog';
 // import SectionDetailCard from '@/components/SectionDetailCard';
@@ -11,38 +11,18 @@ export default async function CartPage() {
 
     console.log("authenticated");
 
-    let userId
     if (!session || !session.user || !session.user.id) {
-        userId = null;
-    } else {
-        userId = session.user.id;
+        await signIn();
+        return;
     }
 
-    let cart;
-    if (!userId) {
-        cart = null;
-    } else {
-        cart = await prisma.cart.findFirst({
-            where: {
-                userId,
-            },
-            include: {
-                courseSections: {
-                    include: {
-                        course: true,
-                        timeSlot: true,
-                        classlist: true
-                    }
-                }
-            },
-        });
-    }
+    const userId = session.user.id;
+    const cart = await getCart(userId);
 
-    console.log(cart);
 
     return (
         <div className='flex flex-row'>
-            <CartList cartItems={cart ? cart.courseSections : []}/>
+            <CartList {...cart}/>
             
             <CartControls />
         </div>

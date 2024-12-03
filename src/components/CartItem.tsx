@@ -20,14 +20,17 @@ export interface CartItemProps {
 export function CartItem(props: CartItemProps) {
 
     return(
-        <TableRow onClick={props.onClick}>
+        <TableRow onClick={props.onClick} className="cursor-pointer">
             <TableCell className="w-2/12 font-medium">{props.sectionName}</TableCell>
             <TableCell className="w-3/12">{props.sectionTime}</TableCell>
             <TableCell className="w-3/12">{props.sectionInstructor}</TableCell>
             {/* <TableCell className="w-1/12">{props.credits}</TableCell> */}
             <TableCell className="w-2/12">{props.sectionSeats}</TableCell>
             <TableCell className="w-1/12 text-right">
-                <Button variant={"outline"} className="hover:bg-red-600" onClick={() => removeFromCart(props.sectionId)}>
+                <Button variant={"destructive"} onClick={(e) => {
+                    e.stopPropagation();
+                    removeFromCart(props.sectionId, '/cart')
+                    }}>
                     <Trash />
                 </Button>
             </TableCell>
