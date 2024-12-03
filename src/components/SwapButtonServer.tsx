@@ -91,7 +91,7 @@ async function handleSelectSection(sectionId: string, userId: string, enrollment
   }
 }
 
-async function handleDeleteEnrollment(enrollmentId: string, userId: string) {
+async function handleDeleteEnrollment(enrollmentId: string) {
   "use server";
   try {
     const enrollment = await prisma.enrolled.findUnique({
