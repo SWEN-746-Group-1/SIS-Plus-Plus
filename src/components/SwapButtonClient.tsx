@@ -1,11 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import { getCart } from '@/app/cart/cartData';
-import { addToCart } from '@/app/cart/addToCart';
-import { removeFromCart } from '@/app/cart/addToCart';
-import { validateCart, ValidationResponse } from '@/app/cart/enrollment';
-import { ValidationStatus } from '@/lib/sisUtils';
 
 type TimeSlot = {
   startTime: number;
@@ -46,52 +41,26 @@ type SwapButtonClientProps = {
   availableSections?: CourseSection[];
   userId: string;
   enrollments: Enrollment[];
+  handleSelectSection: (sectionId: string) => Promise<{ success: boolean; message: string }>;
 };
 
 const SwapButtonClient: React.FC<SwapButtonClientProps> = ({
   availableSections = [],
   userId,
-  enrollments
+  enrollments,
+  handleSelectSection,
 }) => {
   const [isSwapSectionModalOpen, setIsSwapSectionModalOpen] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [messageType, setMessageType] = useState<'success' | 'error' | null>(null);
 
-  const handleSelectSection = async (sectionId: string) => {
-    try {
-      const cart = await getCart(userId);
-      const oldCartSections = cart.cartItems.flatMap((item) =>
-        item.classlist.map((classItem) => classItem.sectionId)
-      );
-      const enrolledSections = enrollments.map((enrollment) =>
-        enrollment.courseSection.id
-      );
-
-      for (const oldId of oldCartSections) {
-        removeFromCart(oldId, '/enrolled');
-      }
-
-      for (const section of enrolledSections) {
-        addToCart(section, '/enrolled');
-      }
-      addToCart(sectionId, '/enrolled')
-
-      const result = await validateCart(true);
-      if (result?.status === ValidationStatus.INVALID) {
-        // indicate invalid schedule
-        for (const section of enrolledSections) {
-          removeFromCart(section, '/enrolled');
-        }
-      } else {
-        // indicate successful enrollment
-      }
-      
-      for (const oldId of oldCartSections) {
-        addToCart(oldId, '/enrolled');
-      }
+  const onSelectSection = async (sectionId: string) => {
+    const result = await handleSelectSection(sectionId);
+    setMessage(result.message);
+    setMessageType(result.success ? 'success' : 'error');
+    if (result.success) {
+      setIsSwapSectionModalOpen(false);
     }
-    catch {
-      console.log("Failed to update sections")
-    }
-    setIsSwapSectionModalOpen(false);
   };
 
   return (
@@ -109,13 +78,24 @@ const SwapButtonClient: React.FC<SwapButtonClientProps> = ({
             <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100 mb-4">
               Available Sections
             </h2>
+
+            {message && (
+              <div
+                className={`mb-4 p-2 rounded-md ${
+                  messageType === 'error' ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
+                }`}
+              >
+                {message}
+              </div>
+            )}
+
             <div className="grid grid-cols-2 gap-4">
-              {availableSections.length === 0 ? (
+              {Array.isArray(availableSections) && availableSections.length === 0 ? (
                 <p className="text-gray-700 dark:text-gray-300 col-span-2">
                   No sections available for this course at the moment.
                 </p>
               ) : (
-                availableSections.map((section) => (
+                Array.isArray(availableSections) && availableSections.length > 0 && availableSections.map((section) => (
                   <div
                     key={section.id}
                     className="p-4 bg-gray-100 dark:bg-gray-700 rounded-md"
@@ -123,9 +103,7 @@ const SwapButtonClient: React.FC<SwapButtonClientProps> = ({
                     <h3 className="font-semibold text-gray-900 dark:text-gray-100">
                       {section.section} - {section.instructor}
                     </h3>
-                    <p className="text-gray-700 dark:text-gray-300">
-                      {section.location}
-                    </p>
+                    <p className="text-gray-700 dark:text-gray-300">{section.location}</p>
                     <p className="text-gray-700 dark:text-gray-300">
                       {section.timeSlot ? (
                         <>
@@ -135,7 +113,7 @@ const SwapButtonClient: React.FC<SwapButtonClientProps> = ({
                     </p>
                     <button
                       className="mt-2 px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition"
-                      onClick={() => handleSelectSection(section.id)}
+                      onClick={() => onSelectSection(section.id)}
                     >
                       Select Section
                     </button>
@@ -143,6 +121,7 @@ const SwapButtonClient: React.FC<SwapButtonClientProps> = ({
                 ))
               )}
             </div>
+
             <button
               className="w-full px-4 py-2 bg-gray-300 dark:bg-gray-600 text-gray-900 dark:text-gray-100 font-medium rounded-md hover:bg-gray-400 dark:hover:bg-gray-500 transition mt-4"
               onClick={() => setIsSwapSectionModalOpen(false)}
