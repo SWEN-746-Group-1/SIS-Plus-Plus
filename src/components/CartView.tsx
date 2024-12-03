@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import { validateCart, ValidationResponse } from '@/app/cart/enrollment';
 import { CartList, CartListProps } from './CartList';
@@ -9,8 +9,7 @@ import { ValidationResultsDialog } from './ValidationResultsDialog';
 
 export function CartView(cart: CartListProps) {
     const [showResults, setShowResults] = useState(false);
-    const [results, setResults] = 
-        useState<ValidationResponse | null>(null);
+    const [results, setResults] = useState<ValidationResponse | null>(null);
 
     async function tryValidate(enrollMode: boolean = false) {
         const newResult = await validateCart(enrollMode);
@@ -22,13 +21,14 @@ export function CartView(cart: CartListProps) {
 
     return (
         <Dialog open={showResults} onOpenChange={setShowResults}>
-            <CartList {...cart}/>
-            <div>
-                <CartControls onValidate={() => tryValidate()} onEnroll={() => tryValidate(true)}/>
+            <div className="flex flex-col max-w-full p-10">
+                <CartList {...cart} />
+                <CartControls
+                    onValidate={() => tryValidate()}
+                    onEnroll={() => tryValidate(true)}
+                />
             </div>
-            {results && (   
-                <ValidationResultsDialog {...results}/>
-            )}
+            {results && <ValidationResultsDialog {...results} />}
         </Dialog>
-    )
+    );
 }
